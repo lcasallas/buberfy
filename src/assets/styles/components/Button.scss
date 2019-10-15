@@ -1,0 +1,21 @@
+.button {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  font-family: 'Muli', sans-serif;
+  cursor: pointer;
+}
+.button-rojo {
+  background-color: #ff4969;
+  color: white;
+}
+.button-morado {
+  background-color: #6c56cc;
+  color: white;
+}
+.button-verde {
+  background-color: #82f68a;
+  color: #322f40;
+}

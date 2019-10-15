@@ -1,7 +1,8 @@
 import React from 'react';
+import '../assets/styles/components/ContainerForm.scss';
 
 const ContainerForm = ({ children }) => (
-  <div className='login__container'>{children}</div>
+  <div className='container__form'>{children}</div>
 );
 
 export default ContainerForm;

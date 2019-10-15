@@ -1,9 +1,9 @@
 import React from 'react';
-// import '../assets/styles/components/Login.scss';
+import '../assets/styles/components/Logo.scss';
 import LogoImg from '../assets/static/logo.png';
 
 const Logo = () => (
-  <div className='login__container-imagen'>
+  <div className='logo'>
     <img src={LogoImg} alt='' />
   </div>
 );

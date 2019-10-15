@@ -1,4 +1,5 @@
 import React from 'react';
+import '../assets/styles/components/Input.scss';
 
 const Input = ({ type, placeholder, name, handleChange }) => {
   return (
@@ -8,6 +9,7 @@ const Input = ({ type, placeholder, name, handleChange }) => {
       placeholder={placeholder}
       name={name}
       onChange={handleChange}
+      autoComplete='off'
     />
   );
 };
