@@ -1,0 +1,30 @@
+.card-one-line {
+	width: 250px;
+	border-radius: 8px;
+	border: 1px solid #c8c7cb;
+	box-shadow: 4px 4px 6px 0px rgba(0, 0, 0, 0.2);
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+	padding: 8px;
+	justify-content: space-between;
+	margin-bottom: 20px;
+	cursor: pointer;
+	transition: 350ms all;
+	transform-origin: center bottom;
+}
+.card-one-line:hover {
+	transform: scale(1.05);
+}
+.card-one-line > div {
+	display: flex;
+	align-items: center;
+}
+.card-one-line img {
+	width: 25px;
+	height: auto;
+}
+.card-one-line span {
+	color: #64626f;
+	margin-left: 10px;
+}

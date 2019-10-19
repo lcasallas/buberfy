@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 
+import Main from '../components/Main';
 import Header from '../components/Header';
 import ContainerDashboard from '../components/ContainerDashboard';
 import ContainerDashboardLeft from '../components/ContainerDashboardLeft';
@@ -41,7 +42,7 @@ const Dashboard = ({ google }) => {
 	};
 
 	return (
-		<>
+		<Main>
 			<Header />
 			<ContainerDashboard>
 				<ContainerDashboardLeft>
@@ -136,7 +137,7 @@ const Dashboard = ({ google }) => {
 					</ContainerDataTrip>
 				</ContainerDashboardRight>
 			</ContainerDashboard>
-		</>
+		</Main>
 	);
 };
 
