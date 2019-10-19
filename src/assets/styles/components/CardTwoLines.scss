@@ -1,0 +1,22 @@
+.cardTwoLines {
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+}
+.cardTwoLines__text {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	padding-left: 20px;
+}
+.cardTwoLines__text-title {
+	font-weight: bold;
+	font-size: 14px;
+}
+.cardTwoLines__text-detail {
+	font-size: 10px;
+}
+.cardTwoLines img {
+	width: 25px;
+	height: auto;
+}
