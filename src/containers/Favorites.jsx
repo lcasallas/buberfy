@@ -7,9 +7,9 @@ import ContainerDashboard from '../components/ContainerDashboard';
 import ContainerDashboardLeft from '../components/ContainerDashboardLeft';
 import ContainerDashboardRight from '../components/ContainerDashboardRight';
 import ContainerDataTrip from '../components/ContainerDataTrip';
-import Input from '../components/Input';
 import Button from '../components/Button';
 import CardContainer from '../components/CardContainer';
+import CardOneLine from '../components/CardOneLine';
 import CardTwoLines from '../components/CardTwoLines';
 import CardThreeLines from '../components/CardThreeLines';
 
@@ -17,28 +17,17 @@ import '../assets/styles/components/Dashboard.scss';
 import CarIcon from '../assets/static/iconCar.png';
 import CashIcon from '../assets/static/iconCash.png';
 import FlagIcon from '../assets/static/iconFlag.png';
+import RepeatIcon from '../assets/static/repeatIcon.png';
 import DriverImg from '../assets/static/userProfile.jpeg';
 
-const Dashboard = ({ google }) => {
+const Favorites = ({ google }) => {
   const [form, setValues] = useState({
     addressOrigin: '',
     addressDestination: '',
   });
 
-  const handleChange = event => {
-    setValues({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
-  };
-
   const handleConfirmTrip = () => {
     console.log('Confirma Viaje');
-  };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-    console.log('Consulta Viaje');
   };
 
   return (
@@ -48,48 +37,37 @@ const Dashboard = ({ google }) => {
         <ContainerDashboardLeft>
           <div className='container__menu-trip'>
             <div className='container__menu-trip-options'>
-              <h2>Detalle Viaje</h2>
-              <form onSubmit={handleSubmit}>
-                <Input
-                  type='text'
-                  placeholder='Direcci&oacute;n Origen'
-                  handleChange={handleChange}
-                  name='addressOrigin'
+              <h2>Destinos Favoritos</h2>
+              <CardContainer>
+                <CardOneLine
+                  imageLeft={CarIcon}
+                  imageRight={RepeatIcon}
+                  title='Platzi, HQ'
                 />
-                <Input
-                  type='text'
-                  placeholder='Direcci&oacute;n Destino'
-                  handleChange={handleChange}
-                  name='addressDestination'
+              </CardContainer>
+              <CardContainer>
+                <CardOneLine
+                  imageLeft={CarIcon}
+                  imageRight={RepeatIcon}
+                  title='Platzi, HQ'
                 />
-                <h2>Tipo de Viaje</h2>
-                <CardContainer>
-                  <CardTwoLines
-                    image={CarIcon}
-                    title='Comparte'
-                    subtitle='Tarifa dividida m&aacute;s econ&oacute;mica.'
-                  />
-                </CardContainer>
-                <CardContainer>
-                  <CardTwoLines
-                    image={CarIcon}
-                    title='Personal'
-                    subtitle='Tarifa econ&oacute;mica.'
-                  />
-                </CardContainer>
-                <CardContainer>
-                  <CardTwoLines
-                    image={CarIcon}
-                    title='Confort'
-                    subtitle='Tarifa plus.'
-                  />
-                </CardContainer>
-                <Button
-                  style='button-morado'
-                  type='submit'
-                  textValue='Consultar Viaje'
+              </CardContainer>
+              <CardContainer>
+                <CardOneLine
+                  imageLeft={CarIcon}
+                  imageRight={RepeatIcon}
+                  title='Platzi, HQ'
                 />
-              </form>
+              </CardContainer>
+              <CardContainer>
+                <CardOneLine
+                  imageLeft={CarIcon}
+                  imageRight={RepeatIcon}
+                  title='Platzi, HQ'
+                />
+              </CardContainer>
+            </div>
+            <div>
               <Button
                 style='button-verde'
                 type='button'
@@ -97,7 +75,6 @@ const Dashboard = ({ google }) => {
                 handleClick={handleConfirmTrip}
               />
             </div>
-            <div></div>
             <div></div>
           </div>
         </ContainerDashboardLeft>
@@ -145,4 +122,4 @@ const Dashboard = ({ google }) => {
 
 export default GoogleApiWrapper({
   apiKey: 'AIzaSyCmjvkXB_DMnBUNwxQztLMStyQmA_szbNw',
-})(Dashboard);
+})(Favorites);
