@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { setLogin } from '../actions';
 import { Link } from 'react-router-dom';
 import '../assets/styles/components/Login.scss';
 import '../assets/styles/App.scss';
@@ -11,7 +13,9 @@ import FacebookIcon from '../assets/static/facebook.png';
 import TwitterIcon from '../assets/static/twitter.png';
 import GoogleIcon from '../assets/static/google.png';
 
-const Login = () => {
+const Login = props => {
+  const { user } = props;
+
   const [form, setValues] = useState({
     usuario: '',
   });
@@ -25,10 +29,11 @@ const Login = () => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    console.log(form);
+    props.setLogin(form);
+    props.history.push('/dashboard');
   };
 
-  return (
+  return Object.keys(user).length === 0 ? (
     <section className='login'>
       <div className='login__image'>
         <img src={LoginImg} alt='' />
@@ -81,6 +86,19 @@ const Login = () => {
         </p>
       </ContainerForm>
     </section>
+  ) : (
+    <div>Hola Mundo</div>
   );
 };
-export default Login;
+const mapStateToProps = state => {
+  return {
+    user: state.user,
+  };
+};
+const mapDispatchToProps = {
+  setLogin,
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);
