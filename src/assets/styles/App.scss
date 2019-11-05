@@ -7,3 +7,23 @@ body {
   font-size: 14px;
   color: #64626f;
 }
+.autocomplete-dropdown-container {
+  background-color: #fff;
+  position: absolute;
+  width: 220px;
+  border: 1px solid #f1f1f1;
+  box-sizing: border-box;
+  padding: 10px;
+}
+.autocomplete-dropdown-container--hide {
+  display: none;
+}
+.suggestion-item,
+.suggestion-item--active {
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+.suggestion-item--active {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}

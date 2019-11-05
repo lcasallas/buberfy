@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from 'react-places-autocomplete';
+import Map from '../components/Map';
+// import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 
 import Main from '../components/Main';
 import Header from '../components/Header';
@@ -23,15 +28,70 @@ const Dashboard = ({ google }) => {
   const [form, setValues] = useState({
     addressOrigin: '',
     addressDestination: '',
+    origin: {},
+    destination: {},
+    duration: '',
+    distance: '',
   });
 
-  const handleChange = event => {
+  // Sesgando la busqueda solo a bogota y su alrededor
+  const searchOptions = {
+    language: 'es',
+    location: new window.google.maps.LatLng(4.710988599999999, -74.072092),
+    radius: 5000,
+    types: ['address'],
+  };
+
+  const handleState = (state, type) => {
     setValues({
       ...form,
-      [event.target.name]: event.target.value,
+      [type]: state,
     });
   };
 
+  const handleChangeOrigin = addressOrigin => {
+    setValues({
+      ...form,
+      addressOrigin: addressOrigin,
+    });
+  };
+
+  const handleSelectOrigin = address => {
+    geocodeByAddress(address)
+      .then(results => getLatLng(results[0]))
+      .then(latLng => handleState(latLng, 'origin'))
+      .catch(err => console.error('Error', err));
+    setValues({
+      ...form,
+      addressOrigin: address,
+    });
+  };
+
+  const handleChangeDestination = addressDestination => {
+    setValues({
+      ...form,
+      addressDestination: addressDestination,
+    });
+  };
+
+  const handleSelectDestination = address => {
+    geocodeByAddress(address)
+      .then(results => getLatLng(results[0]))
+      .then(latLng => handleState(latLng, 'destination'))
+      .catch(err => console.error('Error', err));
+    setValues({
+      ...form,
+      addressDestination: address,
+    });
+  };
+
+  const handleDataTrip = (duration, distance) => {
+    setValues({
+      ...form,
+      duration: duration,
+      distance: distance,
+    });
+  };
   const handleConfirmTrip = () => {
     console.log('Confirma Viaje');
   };
@@ -40,6 +100,84 @@ const Dashboard = ({ google }) => {
     event.preventDefault();
     console.log('Consulta Viaje');
   };
+
+  const originComponent = ({
+    getInputProps,
+    suggestions,
+    getSuggestionItemProps,
+    loading,
+  }) => (
+    <div>
+      <input
+        {...getInputProps({
+          placeholder: 'Origen',
+          className: 'input',
+        })}
+      />
+      <div
+        className={
+          suggestions.length > 0
+            ? 'autocomplete-dropdown-container'
+            : 'autocomplete-dropdown-container--hide'
+        }
+      >
+        {loading && <div>Cargando...</div>}
+        {suggestions.map(suggestion => {
+          const className = suggestion.active
+            ? 'suggestion-item--active'
+            : 'suggestion-item';
+          return (
+            <div
+              {...getSuggestionItemProps(suggestion, {
+                className,
+              })}
+            >
+              <span>{suggestion.description}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const destinationComponent = ({
+    getInputProps,
+    suggestions,
+    getSuggestionItemProps,
+    loading,
+  }) => (
+    <div>
+      <input
+        {...getInputProps({
+          placeholder: 'Destino',
+          className: 'input',
+        })}
+      />
+      <div
+        className={
+          suggestions.length > 0
+            ? 'autocomplete-dropdown-container'
+            : 'autocomplete-dropdown-container--hide'
+        }
+      >
+        {loading && <div>Cargando...</div>}
+        {suggestions.map(suggestion => {
+          const className = suggestion.active
+            ? 'suggestion-item--active'
+            : 'suggestion-item';
+          return (
+            <div
+              {...getSuggestionItemProps(suggestion, {
+                className,
+              })}
+            >
+              <span>{suggestion.description}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 
   return (
     <Main>
@@ -50,18 +188,22 @@ const Dashboard = ({ google }) => {
             <div className='container__menu-trip-options'>
               <h2>Detalle Viaje</h2>
               <form onSubmit={handleSubmit}>
-                <Input
-                  type='text'
-                  placeholder='Direcci&oacute;n Origen'
-                  handleChange={handleChange}
-                  name='addressOrigin'
-                />
-                <Input
-                  type='text'
-                  placeholder='Direcci&oacute;n Destino'
-                  handleChange={handleChange}
-                  name='addressDestination'
-                />
+                <PlacesAutocomplete
+                  value={form.addressOrigin}
+                  onChange={handleChangeOrigin}
+                  onSelect={handleSelectOrigin}
+                  // searchOptions={searchOptions}
+                >
+                  {originComponent}
+                </PlacesAutocomplete>
+                <PlacesAutocomplete
+                  value={form.addressDestination}
+                  onChange={handleChangeDestination}
+                  onSelect={handleSelectDestination}
+                  // searchOptions={searchOptions}
+                >
+                  {destinationComponent}
+                </PlacesAutocomplete>
                 <h2>Tipo de Viaje</h2>
                 <CardContainer>
                   <CardTwoLines
@@ -104,21 +246,23 @@ const Dashboard = ({ google }) => {
         <ContainerDashboardRight>
           <div className='container__dashboard'>
             <div className='map'>
-              <Map
-                google={google}
-                zoom={4}
-                initialCenter={{ lat: 19.5943885, lng: -97.9526044 }}
-              />
+              {form.origin.lat && form.destination.lat && (
+                <Map
+                  origin={form.origin}
+                  destination={form.destination}
+                  handleDataTrip={handleDataTrip}
+                />
+              )}
             </div>
             <ContainerDataTrip>
               <CardTwoLines
                 image={CashIcon}
-                title='$ 25.000'
+                title={form.distance}
                 subtitle='Tarifa estimada del viaje.'
               />
               <CardTwoLines
                 image={FlagIcon}
-                title='37 min.'
+                title={form.duration}
                 subtitle='Tiempo estimado de llegada.'
               />
               <CardThreeLines
@@ -143,6 +287,7 @@ const Dashboard = ({ google }) => {
   );
 };
 
-export default GoogleApiWrapper({
-  apiKey: 'AIzaSyCmjvkXB_DMnBUNwxQztLMStyQmA_szbNw',
-})(Dashboard);
+export default Dashboard;
+// export default GoogleApiWrapper({
+//   apiKey: 'AIzaSyCmjvkXB_DMnBUNwxQztLMStyQmA_szbNw',
+// })(Dashboard);
