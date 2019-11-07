@@ -32,6 +32,7 @@ const Dashboard = ({ google }) => {
     destination: {},
     duration: '',
     distance: '',
+    directions: {},
   });
 
   // Sesgando la busqueda solo a bogota y su alrededor
@@ -92,13 +93,65 @@ const Dashboard = ({ google }) => {
       distance: distance,
     });
   };
+  
   const handleConfirmTrip = () => {
     console.log('Confirma Viaje');
   };
 
   const handleSubmit = event => {
     event.preventDefault();
-    console.log('Consulta Viaje');
+    const DirectionsService = new window.google.maps.DirectionsService();
+    const DistanceService = new window.google.maps.DistanceMatrixService();
+
+    DirectionsService.route(
+      {
+        origin: new window.google.maps.LatLng(
+          form.origin.lat,
+          form.origin.lng
+        ),
+        destination: new window.google.maps.LatLng(
+          form.destination.lat,
+          form.destination.lng
+        ),
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          setValues({
+            ...form,
+            directions: result,
+          });
+        } else {
+          console.error(`Error solicitando la direccion ${result}`);
+        }
+      }
+    );
+    DistanceService.getDistanceMatrix(
+      {
+        origins: [
+          new window.google.maps.LatLng(
+            form.origin.lat,
+            form.origin.lng
+          ),
+        ],
+        destinations: [
+          new window.google.maps.LatLng(
+            form.destination.lat,
+            form.destination.lng
+          ),
+        ],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        avoidHighways: false,
+        avoidTolls: false,
+        unitSystem: window.google.maps.UnitSystem.IMPERIAL,
+      },
+      (result, status) => {
+        this.handleDataTrip(
+          result.rows[0].elements[0].duration.text,
+          result.rows[0].elements[0].distance.text
+        );
+      }
+    );
   };
 
   const originComponent = ({
@@ -246,13 +299,14 @@ const Dashboard = ({ google }) => {
         <ContainerDashboardRight>
           <div className='container__dashboard'>
             <div className='map'>
-              {form.origin.lat && form.destination.lat && (
+              {/* {form.origin.lat && form.destination.lat && ( */}
                 <Map
                   origin={form.origin}
                   destination={form.destination}
                   handleDataTrip={handleDataTrip}
+                  directions={form.directions}
                 />
-              )}
+              {/* )} */}
             </div>
             <ContainerDataTrip>
               <CardTwoLines
