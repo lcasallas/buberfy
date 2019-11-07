@@ -14,56 +14,57 @@ const Map = compose(
 	withGoogleMap,
 	lifecycle({
 		// componentDidMount() {
-		//   const DirectionsService = new window.google.maps.DirectionsService();
-		//   const DistanceService = new window.google.maps.DistanceMatrixService();
-		//   DirectionsService.route(
-		//     {
-		//       origin: new window.google.maps.LatLng(
-		//         this.props.origin.lat,
-		//         this.props.origin.lng
-		//       ),
-		//       destination: new window.google.maps.LatLng(
-		//         this.props.destination.lat,
-		//         this.props.destination.lng
-		//       ),
-		//       travelMode: window.google.maps.TravelMode.DRIVING,
-		//     },
-		//     (result, status) => {
-		//       if (status === window.google.maps.DirectionsStatus.OK) {
-		//         this.setState({
-		//           directions: result,
-		//         });
-		//       } else {
-		//         console.error(`Error solicitando la direccion ${result}`);
-		//       }
-		//     }
-		//   );
-		//   DistanceService.getDistanceMatrix(
-		//     {
-		//       origins: [
-		//         new window.google.maps.LatLng(
-		//           this.props.origin.lat,
-		//           this.props.origin.lng
-		//         ),
-		//       ],
-		//       destinations: [
-		//         new window.google.maps.LatLng(
-		//           this.props.destination.lat,
-		//           this.props.destination.lng
-		//         ),
-		//       ],
-		//       travelMode: window.google.maps.TravelMode.DRIVING,
-		//       avoidHighways: false,
-		//       avoidTolls: false,
-		//       unitSystem: window.google.maps.UnitSystem.IMPERIAL,
-		//     },
-		//     (result, status) => {
-		//       this.props.handleDataTrip(
-		//         result.rows[0].elements[0].duration.text,
-		//         result.rows[0].elements[0].distance.text
-		//       );
-		//     }
-		//   );
+		// 	const DirectionsService = new window.google.maps.DirectionsService();
+		// 	const DistanceService = new window.google.maps.DistanceMatrixService();
+		// 	DirectionsService.route(
+		// 		{
+		// 			origin: new window.google.maps.LatLng(
+		// 				this.props.origin.lat,
+		// 				this.props.origin.lng
+		// 			),
+		// 			destination: new window.google.maps.LatLng(
+		// 				this.props.destination.lat,
+		// 				this.props.destination.lng
+		// 			),
+		// 			travelMode: window.google.maps.TravelMode.DRIVING,
+		// 		},
+		// 		(result, status) => {
+		// 			if (status === window.google.maps.DirectionsStatus.OK) {
+		// 				this.setState({
+		// 					directions: result,
+		// 				});
+		// 			} else {
+		// 				console.error(`Error solicitando la direccion ${result}`);
+		// 			}
+		// 		}
+		// 	);
+		// 	DistanceService.getDistanceMatrix(
+		// 		{
+		// 			origins: [
+		// 				new window.google.maps.LatLng(
+		// 					this.props.origin.lat,
+		// 					this.props.origin.lng
+		// 				),
+		// 			],
+		// 			destinations: [
+		// 				new window.google.maps.LatLng(
+		// 					this.props.destination.lat,
+		// 					this.props.destination.lng
+		// 				),
+		// 			],
+		// 			travelMode: window.google.maps.TravelMode.DRIVING,
+		// 			avoidHighways: false,
+		// 			avoidTolls: false,
+		// 			unitSystem: window.google.maps.UnitSystem.IMPERIAL,
+		// 		},
+		// 		(result, status) => {
+		// 			console.log(result);
+		// 			this.props.handleDataTrip(
+		// 				result.rows[0].elements[0].duration.text,
+		// 				result.rows[0].elements[0].distance.text
+		// 			);
+		// 		}
+		// 	);
 		// },
 	})
 )(props => {
