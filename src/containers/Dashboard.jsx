@@ -33,6 +33,8 @@ const Dashboard = ({ google }) => {
     duration: '',
     distance: '',
     directions: {},
+    price: '',
+    estimateRate: '',
   });
 
   // Sesgando la busqueda solo a bogota y su alrededor
@@ -43,10 +45,11 @@ const Dashboard = ({ google }) => {
     types: ['address'],
   };
 
-  const handleState = (state, type) => {
+  const handleState = (state, type, typeAux, address) => {
     setValues({
       ...form,
       [type]: state,
+      [typeAux]: address,
     });
   };
 
@@ -60,12 +63,8 @@ const Dashboard = ({ google }) => {
   const handleSelectOrigin = address => {
     geocodeByAddress(address)
       .then(results => getLatLng(results[0]))
-      .then(latLng => handleState(latLng, 'origin'))
+      .then(latLng => handleState(latLng, 'origin', 'addressOrigin', address))
       .catch(err => console.error('Error', err));
-    setValues({
-      ...form,
-      addressOrigin: address,
-    });
   };
 
   const handleChangeDestination = addressDestination => {
@@ -78,28 +77,55 @@ const Dashboard = ({ google }) => {
   const handleSelectDestination = address => {
     geocodeByAddress(address)
       .then(results => getLatLng(results[0]))
-      .then(latLng => handleState(latLng, 'destination'))
+      .then(latLng =>
+        handleState(latLng, 'destination', 'addressDestination', address)
+      )
       .catch(err => console.error('Error', err));
+  };
+
+  const handleTypeTrip = price => {
+    console.log('Price', price);
     setValues({
       ...form,
-      addressDestination: address,
+      price: price,
     });
   };
-  
+
   const handleConfirmTrip = () => {
     console.log('Confirma Viaje');
   };
 
-  const handleDistanceMatrix = () =>{
+  const handleDirectionsService = () => {
+    const DirectionsService = new window.google.maps.DirectionsService();
+
+    DirectionsService.route(
+      {
+        origin: new window.google.maps.LatLng(form.origin.lat, form.origin.lng),
+        destination: new window.google.maps.LatLng(
+          form.destination.lat,
+          form.destination.lng
+        ),
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+        region: 'co',
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          handleDistanceMatrix(result);
+        } else {
+          console.error(`Error solicitando la direccion ${result}`);
+        }
+      }
+    );
+  };
+
+  const handleDistanceMatrix = response => {
     const DistanceService = new window.google.maps.DistanceMatrixService();
 
     DistanceService.getDistanceMatrix(
       {
         origins: [
-          new window.google.maps.LatLng(
-            form.origin.lat,
-            form.origin.lng
-          ),
+          new window.google.maps.LatLng(form.origin.lat, form.origin.lng),
         ],
         destinations: [
           new window.google.maps.LatLng(
@@ -113,52 +139,23 @@ const Dashboard = ({ google }) => {
         unitSystem: window.google.maps.UnitSystem.METRIC,
       },
       (result, status) => {
-        if ( status === 'OK'){
+        if (status === 'OK') {
           setValues({
             ...form,
+            directions: response,
             duration: result.rows[0].elements[0].duration.text,
-            distance: result.rows[0].elements[0].distance.text
+            distance: result.rows[0].elements[0].distance.text,
+            estimateRate:
+              (result.rows[0].elements[0].distance.value / 1000) * form.price,
           });
         }
       }
     );
-  }
+  };
 
-  const handleDirectionsService = () => {
-    const DirectionsService = new window.google.maps.DirectionsService();
-    
-    DirectionsService.route(
-      {
-        origin: new window.google.maps.LatLng(
-          form.origin.lat,
-          form.origin.lng
-        ),
-        destination: new window.google.maps.LatLng(
-          form.destination.lat,
-          form.destination.lng
-        ),
-        travelMode: window.google.maps.TravelMode.DRIVING,
-        unitSystem: window.google.maps.UnitSystem.METRIC,
-        region:'co'
-      },
-      (result, status) => {
-        if (status === window.google.maps.DirectionsStatus.OK) {
-          setValues({
-            ...form,
-            directions: result,
-          });
-          
-          handleDistanceMatrix();
-        } else {
-          console.error(`Error solicitando la direccion ${result}`);
-        }
-      }
-    );
-  }
   const handleSubmit = event => {
     event.preventDefault();
     handleDirectionsService();
-    
   };
 
   const originComponent = ({
@@ -270,6 +267,7 @@ const Dashboard = ({ google }) => {
                     image={CarIcon}
                     title='Comparte'
                     subtitle='Tarifa dividida m&aacute;s econ&oacute;mica.'
+                    handleClick={() => handleTypeTrip('100')}
                   />
                 </CardContainer>
                 <CardContainer>
@@ -287,13 +285,27 @@ const Dashboard = ({ google }) => {
                   />
                 </CardContainer>
                 <Button
-                  style='button-morado'
+                  style={
+                    Object.keys(form.origin).length > 0 &&
+                    Object.keys(form.destination).length > 0
+                      ? 'button-morado'
+                      : 'button-disabled'
+                  }
+                  disabled={
+                    Object.keys(form.origin).length === 0 &&
+                    Object.keys(form.destination).length === 0 &&
+                    true
+                  }
                   type='submit'
                   textValue='Consultar Viaje'
                 />
               </form>
               <Button
-                style='button-verde'
+                style={
+                  Object.keys(form.directions).length > 0
+                    ? 'button-verde'
+                    : 'button-disabled'
+                }
                 type='button'
                 textValue='Confirmar Viaje'
                 handleClick={handleConfirmTrip}
@@ -306,12 +318,12 @@ const Dashboard = ({ google }) => {
         <ContainerDashboardRight>
           <div className='container__dashboard'>
             <div className='map'>
-                <Map
-                  origin={form.origin}
-                  destination={form.destination}
-                  // handleDataTrip={handleDataTrip}
-                  directions={form.directions}
-                />
+              <Map
+                origin={form.origin}
+                destination={form.destination}
+                // handleDataTrip={handleDataTrip}
+                directions={form.directions}
+              />
               {/* {form.origin.lat && form.destination.lat && (
                 <Map
                   origin={form.origin}
@@ -324,7 +336,7 @@ const Dashboard = ({ google }) => {
             <ContainerDataTrip>
               <CardTwoLines
                 image={CashIcon}
-                title={form.distance}
+                title={`$${form.estimateRate} / ${form.distance}`}
                 subtitle='Tarifa estimada del viaje.'
               />
               <CardTwoLines

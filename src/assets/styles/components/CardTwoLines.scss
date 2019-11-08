@@ -1,22 +1,25 @@
 .cardTwoLines {
-	display: flex;
-	align-items: center;
-	box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 }
 .cardTwoLines__text {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 20px;
 }
 .cardTwoLines__text-title {
-	font-weight: bold;
-	font-size: 14px;
+  font-weight: bold;
+  font-size: 14px;
 }
 .cardTwoLines__text-detail {
-	font-size: 10px;
+  font-size: 10px;
 }
 .cardTwoLines img {
-	width: 25px;
-	height: auto;
+  width: 25px;
+  height: auto;
+}
+.cardTwoLines__active {
+  background-color: #dffbf3;
 }
