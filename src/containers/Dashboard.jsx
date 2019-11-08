@@ -83,8 +83,15 @@ const Dashboard = ({ google }) => {
       .catch(err => console.error('Error', err));
   };
 
-  const handleTypeTrip = price => {
-    console.log('Price', price);
+  const handleTypeTrip = (event,price) => {
+    const $typeTrip = document.getElementsByClassName('typeTrip');
+
+    for (let i = 0; i < $typeTrip.length; i++) {
+      $typeTrip[i].className = $typeTrip[i].className.replace("card-container__active", "");
+    }
+    
+    event.currentTarget.className += " card-container__active";
+    
     setValues({
       ...form,
       price: price,
@@ -107,7 +114,6 @@ const Dashboard = ({ google }) => {
         ),
         travelMode: window.google.maps.TravelMode.DRIVING,
         unitSystem: window.google.maps.UnitSystem.METRIC,
-        region: 'co',
       },
       (result, status) => {
         if (status === window.google.maps.DirectionsStatus.OK) {
@@ -146,7 +152,7 @@ const Dashboard = ({ google }) => {
             duration: result.rows[0].elements[0].duration.text,
             distance: result.rows[0].elements[0].distance.text,
             estimateRate:
-              (result.rows[0].elements[0].distance.value / 1000) * form.price,
+              Math.round((result.rows[0].elements[0].distance.value / 100) * form.price),
           });
         }
       }
@@ -262,22 +268,21 @@ const Dashboard = ({ google }) => {
                   {destinationComponent}
                 </PlacesAutocomplete>
                 <h2>Tipo de Viaje</h2>
-                <CardContainer>
+                <CardContainer style="typeTrip" handleClick={(event) => handleTypeTrip(event,'100')}>
                   <CardTwoLines
                     image={CarIcon}
                     title='Comparte'
                     subtitle='Tarifa dividida m&aacute;s econ&oacute;mica.'
-                    handleClick={() => handleTypeTrip('100')}
                   />
                 </CardContainer>
-                <CardContainer>
+                <CardContainer style="typeTrip" handleClick={(event) => handleTypeTrip(event,'200')}>
                   <CardTwoLines
                     image={CarIcon}
                     title='Personal'
                     subtitle='Tarifa econ&oacute;mica.'
                   />
                 </CardContainer>
-                <CardContainer>
+                <CardContainer style="typeTrip" handleClick={(event) => handleTypeTrip(event,'300')}>
                   <CardTwoLines
                     image={CarIcon}
                     title='Confort'
@@ -287,13 +292,15 @@ const Dashboard = ({ google }) => {
                 <Button
                   style={
                     Object.keys(form.origin).length > 0 &&
-                    Object.keys(form.destination).length > 0
+                    Object.keys(form.destination).length > 0 &&
+                    form.price !== ''
                       ? 'button-morado'
                       : 'button-disabled'
                   }
                   disabled={
                     Object.keys(form.origin).length === 0 &&
                     Object.keys(form.destination).length === 0 &&
+                    form.price === '' &&
                     true
                   }
                   type='submit'
