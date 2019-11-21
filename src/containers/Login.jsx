@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { setLogin } from '../actions';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { loginRequest } from '../actions';
 import '../assets/styles/components/Login.scss';
 import '../assets/styles/App.scss';
 import ContainerForm from '../components/ContainerForm';
@@ -13,27 +13,27 @@ import FacebookIcon from '../assets/static/facebook.png';
 import TwitterIcon from '../assets/static/twitter.png';
 import GoogleIcon from '../assets/static/google.png';
 
-const Login = props => {
-  const { user } = props;
+const Login = (props) => {
+  console.log(props);
 
   const [form, setValues] = useState({
-    usuario: '',
+    email: '',
   });
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     setValues({
       ...form,
       [event.target.name]: event.target.value,
     });
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    props.setLogin(form);
-    props.history.push('/dashboard');
+    props.loginRequest(form);
+    // props.history.push('/dashboard');
   };
 
-  return Object.keys(user).length === 0 ? (
+  return props.user.login === false ? (
     <section className='login'>
       <div className='login__image'>
         <img src={LoginImg} alt='' />
@@ -44,15 +44,15 @@ const Login = props => {
         <form action='login__container--form' onSubmit={handleSubmit}>
           <Input
             type='text'
-            placeholder='Usuario'
+            placeholder='email'
             handleChange={handleChange}
-            name='usuario'
+            name='email'
           />
           <Input
             type='password'
             placeholder='Password'
             handleChange={handleChange}
-            name='Contraseña'
+            name='password'
           />
           <Button
             style='button-rojo'
@@ -62,7 +62,7 @@ const Login = props => {
           <div className='login__container--remember-me'>
             <label>
               <input type='checkbox' name='' id='cbox1' value='checkbox' />
-              Recuerdame
+							Recuerdame
             </label>
             <a href='#'>¿Olvidé mi contraseña?</a>
           </div>
@@ -82,23 +82,21 @@ const Login = props => {
           </div>
         </section>
         <p className='login__container--register'>
-          No tienes ninguna cuenta <Link to='/register'>Registrate</Link>
+					No tienes ninguna cuenta
+          <Link to='/register'> Registrate</Link>
         </p>
       </ContainerForm>
     </section>
   ) : (
-    <div>Hola Mundo</div>
+    <Redirect to='/dashboard' />
   );
 };
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     user: state.user,
   };
 };
 const mapDispatchToProps = {
-  setLogin,
+  loginRequest,
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -39,9 +39,8 @@ const Dashboard = ({ google }) => {
 
   // Sesgando la busqueda solo a bogota y su alrededor
   const searchOptions = {
-    language: 'es',
     location: new window.google.maps.LatLng(4.710988599999999, -74.072092),
-    radius: 5000,
+    radius: 45000,
     types: ['address'],
   };
 
