@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { getHistory } from '../actions';
 
 import Main from '../components/Main';
 import Header from '../components/Header';
@@ -13,6 +14,7 @@ import CardContainer from '../components/CardContainer';
 import CardOneLines from '../components/CardOneLine';
 import CardTwoLines from '../components/CardTwoLines';
 import CardThreeLines from '../components/CardThreeLines';
+import Map from '../components/Map';
 
 import '../assets/styles/components/MyAccount.scss';
 import CarIcon from '../assets/static/iconCar.png';
@@ -21,7 +23,11 @@ import FlagIcon from '../assets/static/iconFlag.png';
 import DriverImg from '../assets/static/userProfile.jpeg';
 import BankCardIcon from '../assets/static/iconBankCard.png';
 
-const MyAccount = ({ google }) => {
+const MyAccount = ({ user, historytrips, getHistory }) => {
+  useEffect(() => {
+    getHistory(user.id_usuario);
+  });
+
   const [form, setValues] = useState({
     nombre: '',
     apellido: '',
@@ -29,6 +35,75 @@ const MyAccount = ({ google }) => {
     telefono: '',
     tarjeta: '',
   });
+
+  const [dataMap, setValuesMap] = useState({
+    origin: {},
+    destination: {},
+    duration: '',
+    distance: '',
+    directions: {},
+    price: '',
+    estimateRate: '',
+  });
+
+  const handleDirectionsService = dataTrip => {
+    const DirectionsService = new window.google.maps.DirectionsService();
+
+    DirectionsService.route(
+      {
+        origin: new window.google.maps.LatLng(
+          dataTrip.originLat,
+          dataTrip.originLng
+        ),
+        destination: new window.google.maps.LatLng(
+          dataTrip.destinationLat,
+          dataTrip.destinationLng
+        ),
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          handleDistanceMatrix(result, dataTrip);
+        } else {
+          console.error(`Error solicitando la direccion ${result}`);
+        }
+      }
+    );
+  };
+
+  const handleDistanceMatrix = (response, dataTrip) => {
+    const DistanceService = new window.google.maps.DistanceMatrixService();
+
+    DistanceService.getDistanceMatrix(
+      {
+        origins: [
+          new window.google.maps.LatLng(dataTrip.originLat, dataTrip.originLng),
+        ],
+        destinations: [
+          new window.google.maps.LatLng(
+            dataTrip.destinationLat,
+            dataTrip.destinationLng
+          ),
+        ],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        avoidHighways: false,
+        avoidTolls: false,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+      },
+      (result, status) => {
+        if (status === 'OK') {
+          setValuesMap({
+            ...dataMap,
+            directions: response,
+            duration: dataTrip.duration,
+            distance: dataTrip.distance,
+            estimateRate: dataTrip.estimateRate,
+          });
+        }
+      }
+    );
+  };
 
   const handleChange = event => {
     setValues({
@@ -103,62 +178,30 @@ const MyAccount = ({ google }) => {
             <div className='container__history-trip'>
               <div className='container__history_list-trip'>
                 <h2>Historial de Viajes</h2>
-                <CardContainer>
-                  <CardOneLines
-                    imageLeft={CarIcon}
-                    imageRight={BankCardIcon}
-                    title='Platzi, HQ'
-                  />
-                </CardContainer>
-                <CardContainer>
-                  <CardOneLines
-                    imageLeft={CarIcon}
-                    imageRight={BankCardIcon}
-                    title='Platzi, HQ'
-                  />
-                </CardContainer>
-                <CardContainer>
-                  <CardOneLines
-                    imageLeft={CarIcon}
-                    imageRight={BankCardIcon}
-                    title='Platzi, HQ'
-                  />
-                </CardContainer>
-                <CardContainer>
-                  <CardOneLines
-                    imageLeft={CarIcon}
-                    imageRight={BankCardIcon}
-                    title='Platzi, HQ'
-                  />
-                </CardContainer>
-                <CardContainer>
-                  <CardOneLines
-                    imageLeft={CarIcon}
-                    imageRight={BankCardIcon}
-                    title='Platzi, HQ'
-                  />
-                </CardContainer>
-                <CardContainer>
-                  <CardOneLines
-                    imageLeft={CarIcon}
-                    imageRight={BankCardIcon}
-                    title='Platzi, HQ'
-                  />
-                </CardContainer>
-                <CardContainer>
-                  <CardOneLines
-                    imageLeft={CarIcon}
-                    imageRight={BankCardIcon}
-                    title='Platzi, HQ'
-                  />
-                </CardContainer>
+                <div>
+                  {historytrips.length > 0 &&
+                    historytrips.map((trip, idx) => {
+                      return (
+                        <CardContainer
+                          key={idx}
+                          handleClick={() => handleDirectionsService(trip)}
+                        >
+                          <CardOneLines
+                            imageLeft={CarIcon}
+                            imageRight={BankCardIcon}
+                            title={trip.destino}
+                          />
+                        </CardContainer>
+                      );
+                    })}
+                </div>
               </div>
               <div className='container__history-map'>
                 <div className='map map__account'>
                   <Map
-                    google={google}
-                    zoom={4}
-                    initialCenter={{ lat: 19.5943885, lng: -97.9526044 }}
+                    origin={dataMap.origin}
+                    destination={dataMap.destination}
+                    directions={dataMap.directions}
                   />
                 </div>
               </div>
@@ -167,12 +210,12 @@ const MyAccount = ({ google }) => {
               <ContainerDataTrip>
                 <CardTwoLines
                   image={CashIcon}
-                  title='$ 25.000'
+                  title={dataMap.estimateRate}
                   subtitle='Tarifa estimada del viaje.'
                 />
                 <CardTwoLines
                   image={FlagIcon}
-                  title='37 min.'
+                  title={dataMap.duration}
                   subtitle='Tiempo estimado de llegada.'
                 />
                 <CardThreeLines
@@ -198,6 +241,15 @@ const MyAccount = ({ google }) => {
   );
 };
 
-export default GoogleApiWrapper({
-  apiKey: 'AIzaSyCmjvkXB_DMnBUNwxQztLMStyQmA_szbNw',
-})(MyAccount);
+const mapStateToProps = state => {
+  return {
+    user: state.user,
+    historytrips: state.historytrips,
+  };
+};
+
+const mapDispatchToProps = {
+  getHistory,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyAccount);

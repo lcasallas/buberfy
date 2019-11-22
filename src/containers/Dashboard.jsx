@@ -37,13 +37,6 @@ const Dashboard = ({ google }) => {
     estimateRate: '',
   });
 
-  // Sesgando la busqueda solo a bogota y su alrededor
-  const searchOptions = {
-    location: new window.google.maps.LatLng(4.710988599999999, -74.072092),
-    radius: 45000,
-    types: ['address'],
-  };
-
   const handleState = (state, type, typeAux, address) => {
     setValues({
       ...form,
@@ -82,15 +75,18 @@ const Dashboard = ({ google }) => {
       .catch(err => console.error('Error', err));
   };
 
-  const handleTypeTrip = (event,price) => {
+  const handleTypeTrip = (event, price) => {
     const $typeTrip = document.getElementsByClassName('typeTrip');
 
     for (let i = 0; i < $typeTrip.length; i++) {
-      $typeTrip[i].className = $typeTrip[i].className.replace("card-container__active", "");
+      $typeTrip[i].className = $typeTrip[i].className.replace(
+        'card-container__active',
+        ''
+      );
     }
-    
-    event.currentTarget.className += " card-container__active";
-    
+
+    event.currentTarget.className += ' card-container__active';
+
     setValues({
       ...form,
       price: price,
@@ -150,8 +146,9 @@ const Dashboard = ({ google }) => {
             directions: response,
             duration: result.rows[0].elements[0].duration.text,
             distance: result.rows[0].elements[0].distance.text,
-            estimateRate:
-              Math.round((result.rows[0].elements[0].distance.value / 100) * form.price),
+            estimateRate: Math.round(
+              (result.rows[0].elements[0].distance.value / 100) * form.price
+            ),
           });
         }
       }
@@ -267,21 +264,30 @@ const Dashboard = ({ google }) => {
                   {destinationComponent}
                 </PlacesAutocomplete>
                 <h2>Tipo de Viaje</h2>
-                <CardContainer style="typeTrip" handleClick={(event) => handleTypeTrip(event,'100')}>
+                <CardContainer
+                  style='typeTrip'
+                  handleClick={event => handleTypeTrip(event, '100')}
+                >
                   <CardTwoLines
                     image={CarIcon}
                     title='Comparte'
                     subtitle='Tarifa dividida m&aacute;s econ&oacute;mica.'
                   />
                 </CardContainer>
-                <CardContainer style="typeTrip" handleClick={(event) => handleTypeTrip(event,'200')}>
+                <CardContainer
+                  style='typeTrip'
+                  handleClick={event => handleTypeTrip(event, '200')}
+                >
                   <CardTwoLines
                     image={CarIcon}
                     title='Personal'
                     subtitle='Tarifa econ&oacute;mica.'
                   />
                 </CardContainer>
-                <CardContainer style="typeTrip" handleClick={(event) => handleTypeTrip(event,'300')}>
+                <CardContainer
+                  style='typeTrip'
+                  handleClick={event => handleTypeTrip(event, '300')}
+                >
                   <CardTwoLines
                     image={CarIcon}
                     title='Confort'
@@ -327,17 +333,8 @@ const Dashboard = ({ google }) => {
               <Map
                 origin={form.origin}
                 destination={form.destination}
-                // handleDataTrip={handleDataTrip}
                 directions={form.directions}
               />
-              {/* {form.origin.lat && form.destination.lat && (
-                <Map
-                  origin={form.origin}
-                  destination={form.destination}
-                  handleDataTrip={handleDataTrip}
-                  directions={form.directions}
-                />
-               )}  */}
             </div>
             <ContainerDataTrip>
               <CardTwoLines

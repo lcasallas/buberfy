@@ -6,7 +6,7 @@ import Dashboard from '../containers/Dashboard';
 import MyAccount from '../containers/MyAccount';
 import Favorites from '../containers/Favorites';
 
-const App = () => (
+const App = ({ isLogin }) => (
   <BrowserRouter>
     <Switch>
       <Route exact path='/' component={Login} />

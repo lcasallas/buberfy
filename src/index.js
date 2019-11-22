@@ -7,34 +7,43 @@ import reducer from './reducers';
 import App from './routes/App';
 
 const initialState = {
-	user: {
-		login: false,
-	},
-	trips: [
-		{
-			id: '1',
-			address_origin: 'cr 29 77 30',
-			address_final: 'Platzi, HQ',
-			journey_km: '8',
-			time_trip: '27min',
-			cost: '12000',
-			car: 'chevrolet spark',
-			driver: 'Uber Contreras',
-			score: '4.5',
-		},
-	],
+  user: {},
+  favorites: [],
+  mytrips: [],
+  historytrips: [
+    {
+      originLat: 4.6560663,
+      originLng: -74.05740309999999,
+      destinationLat: 4.694707999999999,
+      destinationLng: -74.08618799999999,
+      destino: 'Centro Comercial Titán Plaza, Avenida Boyacá, Bogotá, Colombia',
+      distance: '6,3 km',
+      duration: '17 min',
+      estimateRate: 6344,
+    },
+    {
+      originLat: 4.668194,
+      originLng: -74.0530149,
+      destinationLat: 4.6514282,
+      destinationLng: -74.12631499999998,
+      destino: 'Multiplaza, Centro Comercial, Bogotá, Colombia',
+      distance: '13,2 km',
+      duration: '31 min',
+      estimateRate: 26312,
+    },
+  ],
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
-	reducer,
-	initialState,
-	composeEnhancers(applyMiddleware(thunk))
+  reducer,
+  initialState,
+  composeEnhancers(applyMiddleware(thunk))
 );
 
 ReactDOM.render(
-	<Provider store={store}>
-		<App />
-	</Provider>,
-	document.getElementById('app')
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('app')
 );

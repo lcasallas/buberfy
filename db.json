@@ -1,0 +1,20 @@
+{
+  "user": {
+    "login": true,
+    "id_usuario": 1,
+    "nombre": "Leonardo"
+  },
+  "trips": [
+    {
+      "id": "1",
+      "address_origin": "cr 29 77 30",
+      "address_final": "Platzi, HQ",
+      "journey_km": "8",
+      "time_trip": "27min",
+      "cost": "12000",
+      "car": "chevrolet spark",
+      "driver": "Uber Contreras",
+      "score": "4.5"
+    }
+  ]
+}

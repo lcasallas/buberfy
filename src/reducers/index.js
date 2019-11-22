@@ -5,6 +5,16 @@ const reducer = (state, action) => {
         ...state,
         user: action.payload,
       };
+    case 'SAVE_TRIP':
+      return {
+        ...state,
+        history: state.history.push(action.payload),
+      };
+    case 'GET_HISTORY':
+      return {
+        ...state,
+        history: action.payload,
+      };
     default:
       return state;
   }

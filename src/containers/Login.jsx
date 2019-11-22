@@ -13,27 +13,26 @@ import FacebookIcon from '../assets/static/facebook.png';
 import TwitterIcon from '../assets/static/twitter.png';
 import GoogleIcon from '../assets/static/google.png';
 
-const Login = (props) => {
-  console.log(props);
+const Login = props => {
+  console.log(props.user.login);
 
   const [form, setValues] = useState({
     email: '',
   });
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setValues({
       ...form,
       [event.target.name]: event.target.value,
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
     props.loginRequest(form);
-    // props.history.push('/dashboard');
   };
 
-  return props.user.login === false ? (
+  return !props.user.login ? (
     <section className='login'>
       <div className='login__image'>
         <img src={LoginImg} alt='' />
@@ -62,7 +61,7 @@ const Login = (props) => {
           <div className='login__container--remember-me'>
             <label>
               <input type='checkbox' name='' id='cbox1' value='checkbox' />
-							Recuerdame
+              Recuerdame
             </label>
             <a href='#'>¿Olvidé mi contraseña?</a>
           </div>
@@ -82,7 +81,7 @@ const Login = (props) => {
           </div>
         </section>
         <p className='login__container--register'>
-					No tienes ninguna cuenta
+          No tienes ninguna cuenta
           <Link to='/register'> Registrate</Link>
         </p>
       </ContainerForm>
@@ -91,7 +90,7 @@ const Login = (props) => {
     <Redirect to='/dashboard' />
   );
 };
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     user: state.user,
   };
