@@ -13,7 +13,7 @@ const reducer = (state, action) => {
     case 'GET_HISTORY':
       return {
         ...state,
-        history: action.payload,
+        historytrips: action.payload,
       };
     default:
       return state;

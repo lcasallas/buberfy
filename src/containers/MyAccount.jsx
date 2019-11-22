@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { getHistory } from '../actions';
+import { historyRequest } from '../actions';
 
 import Main from '../components/Main';
 import Header from '../components/Header';
@@ -23,9 +23,9 @@ import FlagIcon from '../assets/static/iconFlag.png';
 import DriverImg from '../assets/static/userProfile.jpeg';
 import BankCardIcon from '../assets/static/iconBankCard.png';
 
-const MyAccount = ({ user, historytrips, getHistory }) => {
+const MyAccount = ({ user, historytrips, historyRequest }) => {
   useEffect(() => {
-    getHistory(user.id_usuario);
+    historyRequest(user.id_usuario);
   });
 
   const [form, setValues] = useState({
@@ -249,7 +249,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  getHistory,
+  historyRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyAccount);
