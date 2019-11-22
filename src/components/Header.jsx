@@ -21,6 +21,7 @@ const Header = () => {
           <li>
             <Link to='/dashboard'>viajar</Link>
           </li>
+          <li>cerrar sesi&oacute;n</li>
         </ul>
         <div className='header__profile'>
           <img src={Avatar} alt='Photo Profile' />

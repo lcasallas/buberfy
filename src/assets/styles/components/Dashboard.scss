@@ -1,24 +1,26 @@
-.container__menu-trip-options form {
-  margin-bottom: 30px;
+.container__menu-trip-options form,
+.container__menu-trip-options .button {
+	margin-bottom: 16px;
 }
+
 .container__menu-trip-options h2 {
-  text-align: center;
-  color: #322f40;
+	text-align: center;
+	color: #322f40;
 }
 .container__dashboard {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 }
 .map {
-  width: 100%;
-  height: 80%;
-  position: relative;
-  text-align: right;
-  border-radius: 10px;
-  overflow: hidden;
-  box-sizing: border-box;
-  border: 1px solid #c8c7cb;
-  box-shadow: 6px 6px 16px 0px rgba(0, 0, 0, 0.2);
+	width: 100%;
+	height: 80%;
+	position: relative;
+	text-align: right;
+	border-radius: 10px;
+	overflow: hidden;
+	box-sizing: border-box;
+	border: 1px solid #c8c7cb;
+	box-shadow: 6px 6px 16px 0px rgba(0, 0, 0, 0.2);
 }

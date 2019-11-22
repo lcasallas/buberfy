@@ -210,7 +210,7 @@ const MyAccount = ({ user, historytrips, getHistory }) => {
               <ContainerDataTrip>
                 <CardTwoLines
                   image={CashIcon}
-                  title={dataMap.estimateRate}
+                  title={`$${dataMap.estimateRate} / ${dataMap.distance}`}
                   subtitle='Tarifa estimada del viaje.'
                 />
                 <CardTwoLines

@@ -1,26 +1,32 @@
 .button {
-  width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  border: none;
-  font-weight: bold;
-  font-family: 'Muli', sans-serif;
-  cursor: pointer;
+	width: 100%;
+	padding: 8px;
+	border-radius: 8px;
+	border: none;
+	font-weight: bold;
+	font-family: 'Muli', sans-serif;
+	cursor: pointer;
 }
 .button-rojo {
-  background-color: #ff4969;
-  color: white;
+	background-color: #ff4969;
+	color: white;
 }
 .button-morado {
-  background-color: #6c56cc;
-  color: white;
+	background-color: #6c56cc;
+	color: white;
 }
 .button-verde {
-  background-color: #82f68a;
-  color: #322f40;
+	background-color: #82f68a;
+	color: #322f40;
 }
 .button-disabled {
-  background-color: #d3d3d3;
-  color: #858585;
-  cursor: no-drop;
+	background-color: #d3d3d3;
+	color: #858585;
+	cursor: no-drop;
+}
+
+.button-rojo-underline {
+	background-color: #fff;
+	color: #ff4969;
+	border: 1px solid #ff4969;
 }

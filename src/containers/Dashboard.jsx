@@ -35,6 +35,7 @@ const Dashboard = ({ google }) => {
     directions: {},
     price: '',
     estimateRate: '',
+    tipoViaje:''
   });
 
   const handleState = (state, type, typeAux, address) => {
@@ -75,7 +76,7 @@ const Dashboard = ({ google }) => {
       .catch(err => console.error('Error', err));
   };
 
-  const handleTypeTrip = (event, price) => {
+  const handleTypeTrip = (event, price, type) => {
     const $typeTrip = document.getElementsByClassName('typeTrip');
 
     for (let i = 0; i < $typeTrip.length; i++) {
@@ -90,12 +91,17 @@ const Dashboard = ({ google }) => {
     setValues({
       ...form,
       price: price,
+      tipoViaje: type,
     });
   };
 
   const handleConfirmTrip = () => {
     console.log('Confirma Viaje');
   };
+
+  const handleAddFavorites = () => {
+    console.log('add favorites');
+  }
 
   const handleDirectionsService = () => {
     const DirectionsService = new window.google.maps.DirectionsService();
@@ -321,6 +327,16 @@ const Dashboard = ({ google }) => {
                 type='button'
                 textValue='Confirmar Viaje'
                 handleClick={handleConfirmTrip}
+              />
+              <Button
+                style={
+                  Object.keys(form.directions).length > 0
+                    ? 'button-rojo-underline'
+                    : 'button-disabled'
+                }
+                type='button'
+                textValue='Agregar a favoritos'
+                handleClick={handleAddFavorites}
               />
             </div>
             <div></div>
