@@ -15,6 +15,11 @@ const reducer = (state, action) => {
         ...state,
         historytrips: action.payload,
       };
+    case 'GET_FAVORITE':
+      return {
+        ...state,
+        favoritesTrips: action.payload,
+      };
     default:
       return state;
   }

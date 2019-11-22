@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
+import { connect } from 'react-redux';
+import { favoriteRequest } from '../actions';
 
 import Main from '../components/Main';
 import Header from '../components/Header';
@@ -12,6 +13,7 @@ import CardContainer from '../components/CardContainer';
 import CardOneLine from '../components/CardOneLine';
 import CardTwoLines from '../components/CardTwoLines';
 import CardThreeLines from '../components/CardThreeLines';
+import Map from '../components/Map';
 
 import '../assets/styles/components/Dashboard.scss';
 import CarIcon from '../assets/static/iconCar.png';
@@ -26,6 +28,75 @@ const Favorites = ({ google }) => {
     addressDestination: '',
   });
 
+  const [dataMap, setValuesMap] = useState({
+    origin: {},
+    destination: {},
+    duration: '',
+    distance: '',
+    directions: {},
+    price: '',
+    estimateRate: '',
+  });
+
+  const handleDirectionsService = (dataTrip) => {
+    const DirectionsService = new window.google.maps.DirectionsService();
+
+    DirectionsService.route(
+      {
+        origin: new window.google.maps.LatLng(
+          dataTrip.originlat,
+          dataTrip.originlng,
+        ),
+        destination: new window.google.maps.LatLng(
+          dataTrip.destinationlat,
+          dataTrip.destinationlng,
+        ),
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+      },
+      (result, status) => {
+        if (status === window.google.maps.DirectionsStatus.OK) {
+          handleDistanceMatrix(result, dataTrip);
+        } else {
+          console.error(`Error solicitando la direccion ${result}`);
+        }
+      },
+    );
+  };
+
+  const handleDistanceMatrix = (response, dataTrip) => {
+    const DistanceService = new window.google.maps.DistanceMatrixService();
+
+    DistanceService.getDistanceMatrix(
+      {
+        origins: [
+          new window.google.maps.LatLng(dataTrip.originlat, dataTrip.originlng),
+        ],
+        destinations: [
+          new window.google.maps.LatLng(
+            dataTrip.destinationlat,
+            dataTrip.destinationlng,
+          ),
+        ],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        avoidHighways: false,
+        avoidTolls: false,
+        unitSystem: window.google.maps.UnitSystem.METRIC,
+      },
+      (result, status) => {
+        if (status === 'OK') {
+          setValuesMap({
+            ...dataMap,
+            directions: response,
+            duration: dataTrip.duration,
+            distance: dataTrip.distance,
+            estimateRate: dataTrip.estimaterate,
+          });
+        }
+      },
+    );
+  };
+
   const handleConfirmTrip = () => {
     console.log('Confirma Viaje');
   };
@@ -38,34 +109,21 @@ const Favorites = ({ google }) => {
           <div className='container__menu-trip'>
             <div className='container__menu-trip-options'>
               <h2>Destinos Favoritos</h2>
-              <CardContainer>
-                <CardOneLine
-                  imageLeft={CarIcon}
-                  imageRight={RepeatIcon}
-                  title='Platzi, HQ'
-                />
-              </CardContainer>
-              <CardContainer>
-                <CardOneLine
-                  imageLeft={CarIcon}
-                  imageRight={RepeatIcon}
-                  title='Platzi, HQ'
-                />
-              </CardContainer>
-              <CardContainer>
-                <CardOneLine
-                  imageLeft={CarIcon}
-                  imageRight={RepeatIcon}
-                  title='Platzi, HQ'
-                />
-              </CardContainer>
-              <CardContainer>
-                <CardOneLine
-                  imageLeft={CarIcon}
-                  imageRight={RepeatIcon}
-                  title='Platzi, HQ'
-                />
-              </CardContainer>
+              {favoritesTrips.length > 0 &&
+								favoritesTrips.map((trip, idx) => {
+								  return (
+								    <CardContainer
+								      key={idx}
+								      handleClick={() => handleDirectionsService(trip)}
+								    >
+								      <CardOneLine
+								        imageLeft={CarIcon}
+								        imageRight={BankCardIcon}
+								        title={trip.destino}
+								      />
+								    </CardContainer>
+								  );
+								})}
             </div>
             <div>
               <Button
@@ -75,27 +133,27 @@ const Favorites = ({ google }) => {
                 handleClick={handleConfirmTrip}
               />
             </div>
-            <div></div>
+            <div />
           </div>
         </ContainerDashboardLeft>
         <ContainerDashboardRight>
           <div className='container__dashboard'>
             <div className='map'>
               <Map
-                google={google}
-                zoom={4}
-                initialCenter={{ lat: 19.5943885, lng: -97.9526044 }}
+                origin={dataMap.origin}
+                destination={dataMap.destination}
+                directions={dataMap.directions}
               />
             </div>
             <ContainerDataTrip>
               <CardTwoLines
                 image={CashIcon}
-                title='$ 25.000'
+                title={`$${dataMap.estimateRate} / ${dataMap.distance}`}
                 subtitle='Tarifa estimada del viaje.'
               />
               <CardTwoLines
                 image={FlagIcon}
-                title='37 min.'
+                title={dataMap.duration}
                 subtitle='Tiempo estimado de llegada.'
               />
               <CardThreeLines
@@ -120,6 +178,14 @@ const Favorites = ({ google }) => {
   );
 };
 
-export default GoogleApiWrapper({
-  apiKey: 'AIzaSyCmjvkXB_DMnBUNwxQztLMStyQmA_szbNw',
-})(Favorites);
+const mapStateToProps = (state) => {
+  return {
+    favoritesTrips: state.favorites,
+  };
+};
+
+const mapDispatchToProps = {
+  favoriteRequest,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Favorites);

@@ -11,7 +11,7 @@ import ContainerDataTrip from '../components/ContainerDataTrip';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import CardContainer from '../components/CardContainer';
-import CardOneLines from '../components/CardOneLine';
+import CardOneLine from '../components/CardOneLine';
 import CardTwoLines from '../components/CardTwoLines';
 import CardThreeLines from '../components/CardThreeLines';
 import Map from '../components/Map';
@@ -26,7 +26,7 @@ import BankCardIcon from '../assets/static/iconBankCard.png';
 const MyAccount = ({ user, historytrips, historyRequest }) => {
   useEffect(() => {
     historyRequest(user.id_usuario);
-  });
+  }, []);
 
   const [form, setValues] = useState({
     nombre: '',
@@ -46,18 +46,18 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
     estimateRate: '',
   });
 
-  const handleDirectionsService = dataTrip => {
+  const handleDirectionsService = (dataTrip) => {
     const DirectionsService = new window.google.maps.DirectionsService();
 
     DirectionsService.route(
       {
         origin: new window.google.maps.LatLng(
-          dataTrip.originLat,
-          dataTrip.originLng
+          dataTrip.originlat,
+          dataTrip.originlng,
         ),
         destination: new window.google.maps.LatLng(
-          dataTrip.destinationLat,
-          dataTrip.destinationLng
+          dataTrip.destinationlat,
+          dataTrip.destinationlng,
         ),
         travelMode: window.google.maps.TravelMode.DRIVING,
         unitSystem: window.google.maps.UnitSystem.METRIC,
@@ -68,7 +68,7 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
         } else {
           console.error(`Error solicitando la direccion ${result}`);
         }
-      }
+      },
     );
   };
 
@@ -78,12 +78,12 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
     DistanceService.getDistanceMatrix(
       {
         origins: [
-          new window.google.maps.LatLng(dataTrip.originLat, dataTrip.originLng),
+          new window.google.maps.LatLng(dataTrip.originlat, dataTrip.originlng),
         ],
         destinations: [
           new window.google.maps.LatLng(
-            dataTrip.destinationLat,
-            dataTrip.destinationLng
+            dataTrip.destinationlat,
+            dataTrip.destinationlng,
           ),
         ],
         travelMode: window.google.maps.TravelMode.DRIVING,
@@ -98,14 +98,14 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
             directions: response,
             duration: dataTrip.duration,
             distance: dataTrip.distance,
-            estimateRate: dataTrip.estimateRate,
+            estimateRate: dataTrip.estimaterate,
           });
         }
-      }
+      },
     );
   };
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     setValues({
       ...form,
       [event.target.name]: event.target.value,
@@ -116,7 +116,7 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
     console.log('Datos Actualizados');
   };
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     console.log('Datos mi cuenta');
   };
@@ -180,20 +180,20 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
                 <h2>Historial de Viajes</h2>
                 <div>
                   {historytrips.length > 0 &&
-                    historytrips.map((trip, idx) => {
-                      return (
-                        <CardContainer
-                          key={idx}
-                          handleClick={() => handleDirectionsService(trip)}
-                        >
-                          <CardOneLines
-                            imageLeft={CarIcon}
-                            imageRight={BankCardIcon}
-                            title={trip.destino}
-                          />
-                        </CardContainer>
-                      );
-                    })}
+										historytrips.map((trip, idx) => {
+										  return (
+										    <CardContainer
+										      key={idx}
+										      handleClick={() => handleDirectionsService(trip)}
+										    >
+										      <CardOneLine
+										        imageLeft={CarIcon}
+										        imageRight={BankCardIcon}
+										        title={trip.destino}
+										      />
+										    </CardContainer>
+										  );
+										})}
                 </div>
               </div>
               <div className='container__history-map'>
@@ -241,7 +241,7 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     user: state.user,
     historytrips: state.historytrips,
