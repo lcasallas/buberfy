@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import Script from 'react-load-script';
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
-import Map from '../components/Map';
+import { connect } from 'react-redux';
+import { saveTravelRequest } from '../actions';
 
+import Map from '../components/Map';
 import Main from '../components/Main';
 import ContainerDashboard from '../components/ContainerDashboard';
 import ContainerDashboardLeft from '../components/ContainerDashboardLeft';
@@ -22,9 +23,7 @@ import CashIcon from '../assets/static/iconCash.png';
 import FlagIcon from '../assets/static/iconFlag.png';
 import DriverImg from '../assets/static/userProfile.jpeg';
 
-const Dashboard = ({ google }) => {
-
-  const APIMAP = process.env.API_MAPS;
+const Dashboard = ({ id_usuario, saveTravelRequest }) => {
   
   const [form, setValues] = useState({
     addressOrigin: '',
@@ -38,12 +37,6 @@ const Dashboard = ({ google }) => {
     estimateRate: '',
     tipoViaje: '',
   });
-
-  const [isLoaded, setLoad] = useState(false);
-
-  const handleLoadApiMap = () => {
-    setLoad(true);
-  }
 
   const handleState = (state, type, typeAux, address) => {
     setValues({
@@ -103,7 +96,22 @@ const Dashboard = ({ google }) => {
   };
 
   const handleConfirmTrip = () => {
-    console.log('Confirma Viaje');
+    const data = {
+      'id_usuario': id_usuario,
+      'lat_origen': form.origin.lat,
+      'lon_origen': form.origin.lng,
+      'lat_destino': form.destination.lat,
+      'lon_destino': form.destination.lng,
+      'id_metodo_pago':1,
+      'valor_pagar': form.estimateRate,
+      'estado': 'Finalizado',
+      'direccion_origen': form.addressOrigin,
+      'direccion_destino': form.addressDestination,
+      'tipo_viaje': form.tipoViaje,
+      'distancia': form.distance,
+      'duracion': form.duration
+    }
+    saveTravelRequest(data);
   };
 
   const handleAddFavorites = () => {
@@ -252,13 +260,6 @@ const Dashboard = ({ google }) => {
   );
 
   return (
-    <>
-      <Script 
-        url={`https://maps.googleapis.com/maps/api/js?key=${APIMAP}&libraries=drawing,geometry,places`}
-        onLoad={handleLoadApiMap}
-      />
-    {
-      isLoaded && 
       <Main>
         <ContainerDashboard>
           <ContainerDashboardLeft>
@@ -285,7 +286,7 @@ const Dashboard = ({ google }) => {
                   <h2>Tipo de Viaje</h2>
                   <CardContainer
                     style='typeTrip'
-                    handleClick={event => handleTypeTrip(event, '100')}
+                    handleClick={event => handleTypeTrip(event, '100', 'COMPARTE')}
                   >
                     <CardTwoLines
                       image={CarIcon}
@@ -295,7 +296,7 @@ const Dashboard = ({ google }) => {
                   </CardContainer>
                   <CardContainer
                     style='typeTrip'
-                    handleClick={event => handleTypeTrip(event, '200')}
+                    handleClick={event => handleTypeTrip(event, '200', 'PERSONAL')}
                   >
                     <CardTwoLines
                       image={CarIcon}
@@ -305,7 +306,7 @@ const Dashboard = ({ google }) => {
                   </CardContainer>
                   <CardContainer
                     style='typeTrip'
-                    handleClick={event => handleTypeTrip(event, '300')}
+                    handleClick={event => handleTypeTrip(event, '300', 'CONFORT')}
                   >
                     <CardTwoLines
                       image={CarIcon}
@@ -339,7 +340,7 @@ const Dashboard = ({ google }) => {
                   }
                   type='button'
                   textValue='Confirmar Viaje'
-                  handleClick={handleConfirmTrip}
+                  handleClick={ () => handleConfirmTrip(id_usuario)}
                 />
                 <Button
                   style={
@@ -393,12 +394,16 @@ const Dashboard = ({ google }) => {
           </ContainerDashboardRight>
         </ContainerDashboard>
       </Main> 
-    }
-    </>
   );
 };
 
-export default Dashboard;
-// export default GoogleApiWrapper({
-//   apiKey: 'AIzaSyCmjvkXB_DMnBUNwxQztLMStyQmA_szbNw',
-// })(Dashboard);
+const mapStateToProps = state => {
+  return {
+    id_usuario: state.user.id_usuario,
+    notificationstate: state.notificationstate,
+  }
+}
+const mapDispatchToProps = {
+  saveTravelRequest,
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

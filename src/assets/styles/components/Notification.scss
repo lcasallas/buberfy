@@ -1,0 +1,50 @@
+.notification {
+	width: 275px;
+	height: 50px;
+	border: 1px solid red;
+	color: #444;
+	position: fixed;
+	left: 10px;
+	bottom: 10px;
+	border-radius: 4px;
+	visibility: hidden;
+	z-index: 400;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.notification__success {
+	border: 1px solid #c8e6c9;
+	background-color: #c8e6c9;
+	visibility: visible;
+	animation: fadein 0.5s, fadeout 0.5s 2s;
+}
+
+.notification__error {
+	border: 1px solid #ffcdd2;
+	background-color: #ffcdd2;
+	visibility: visible;
+	animation: fadein 0.5s, fadeout 0.5s 2s;
+}
+
+@keyframes fadein {
+	from {
+		bottom: 0px;
+		opacity: 0;
+	}
+	to {
+		bottom: 10px;
+		opacity: 1;
+	}
+}
+
+@keyframes fadeout {
+	from {
+		bottom: 10px;
+		opacity: 1;
+	}
+	to {
+		bottom: 0px;
+		opacity: 0;
+	}
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import Script from 'react-load-script';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Login from '../containers/Login';
@@ -7,17 +8,36 @@ import Dashboard from '../containers/Dashboard';
 import MyAccount from '../containers/MyAccount';
 import Favorites from '../containers/Favorites';
 import Header from '../components/Header';
+import Notification from '../containers/Notification';
 
-const App = ({ isLogin }) => (
+const APIMAP = process.env.API_MAPS;
+
+const App = ({ isLogin, notification }) => (
 	<BrowserRouter>
+		<Script
+			url={`https://maps.googleapis.com/maps/api/js?key=${APIMAP}&libraries=drawing,geometry,places`}
+		/>
 		{isLogin && <Header />}
+		<Notification data={notification} />
 		<div>
 			<Switch>
 				<Route exact path='/' component={Login} />
 				<Route exact path='/register' component={Register} />
-				<Route exact path='/dashboard' component={Dashboard} />
-				<Route exact path='/myaccount' component={MyAccount} />
-				<Route exact path='/favorites' component={Favorites} />
+				<Route
+					exact
+					path='/dashboard'
+					component={isLogin ? Dashboard : Login}
+				/>
+				<Route
+					exact
+					path='/myaccount'
+					component={isLogin ? MyAccount : Login}
+				/>
+				<Route
+					exact
+					path='/favorites'
+					component={isLogin ? Favorites : Login}
+				/>
 			</Switch>
 		</div>
 	</BrowserRouter>
@@ -26,6 +46,7 @@ const App = ({ isLogin }) => (
 const mapStateToProps = state => {
 	return {
 		isLogin: state.user.id_usuario,
+		notification: state.notificationstate,
 	};
 };
 export default connect(mapStateToProps, null)(App);
