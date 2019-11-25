@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import Script from 'react-load-script';
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
 import Map from '../components/Map';
-// import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 
 import Main from '../components/Main';
 import ContainerDashboard from '../components/ContainerDashboard';
@@ -23,6 +23,9 @@ import FlagIcon from '../assets/static/iconFlag.png';
 import DriverImg from '../assets/static/userProfile.jpeg';
 
 const Dashboard = ({ google }) => {
+
+  const APIMAP = process.env.API_MAPS;
+  
   const [form, setValues] = useState({
     addressOrigin: '',
     addressDestination: '',
@@ -35,6 +38,12 @@ const Dashboard = ({ google }) => {
     estimateRate: '',
     tipoViaje: '',
   });
+
+  const [isLoaded, setLoad] = useState(false);
+
+  const handleLoadApiMap = () => {
+    setLoad(true);
+  }
 
   const handleState = (state, type, typeAux, address) => {
     setValues({
@@ -243,140 +252,149 @@ const Dashboard = ({ google }) => {
   );
 
   return (
-    <Main>
-      <ContainerDashboard>
-        <ContainerDashboardLeft>
-          <div className='container__menu-trip'>
-            <div className='container__menu-trip-options'>
-              <h2>Detalle Viaje</h2>
-              <form onSubmit={handleSubmit}>
-                <PlacesAutocomplete
-                  value={form.addressOrigin}
-                  onChange={handleChangeOrigin}
-                  onSelect={handleSelectOrigin}
-                  // searchOptions={searchOptions}
-                >
-                  {originComponent}
-                </PlacesAutocomplete>
-                <PlacesAutocomplete
-                  value={form.addressDestination}
-                  onChange={handleChangeDestination}
-                  onSelect={handleSelectDestination}
-                  // searchOptions={searchOptions}
-                >
-                  {destinationComponent}
-                </PlacesAutocomplete>
-                <h2>Tipo de Viaje</h2>
-                <CardContainer
-                  style='typeTrip'
-                  handleClick={event => handleTypeTrip(event, '100')}
-                >
-                  <CardTwoLines
-                    image={CarIcon}
-                    title='Comparte'
-                    subtitle='Tarifa dividida m&aacute;s econ&oacute;mica.'
+    <>
+      <Script 
+        url={`https://maps.googleapis.com/maps/api/js?key=${APIMAP}&libraries=drawing,geometry,places`}
+        onLoad={handleLoadApiMap}
+      />
+    {
+      isLoaded && 
+      <Main>
+        <ContainerDashboard>
+          <ContainerDashboardLeft>
+            <div className='container__menu-trip'>
+              <div className='container__menu-trip-options'>
+                <h2>Detalle Viaje</h2>
+                <form onSubmit={handleSubmit}>
+                  <PlacesAutocomplete
+                    value={form.addressOrigin}
+                    onChange={handleChangeOrigin}
+                    onSelect={handleSelectOrigin}
+                    // searchOptions={searchOptions}
+                  >
+                    {originComponent}
+                  </PlacesAutocomplete>
+                  <PlacesAutocomplete
+                    value={form.addressDestination}
+                    onChange={handleChangeDestination}
+                    onSelect={handleSelectDestination}
+                    // searchOptions={searchOptions}
+                  >
+                    {destinationComponent}
+                  </PlacesAutocomplete>
+                  <h2>Tipo de Viaje</h2>
+                  <CardContainer
+                    style='typeTrip'
+                    handleClick={event => handleTypeTrip(event, '100')}
+                  >
+                    <CardTwoLines
+                      image={CarIcon}
+                      title='Comparte'
+                      subtitle='Tarifa dividida m&aacute;s econ&oacute;mica.'
+                    />
+                  </CardContainer>
+                  <CardContainer
+                    style='typeTrip'
+                    handleClick={event => handleTypeTrip(event, '200')}
+                  >
+                    <CardTwoLines
+                      image={CarIcon}
+                      title='Personal'
+                      subtitle='Tarifa econ&oacute;mica.'
+                    />
+                  </CardContainer>
+                  <CardContainer
+                    style='typeTrip'
+                    handleClick={event => handleTypeTrip(event, '300')}
+                  >
+                    <CardTwoLines
+                      image={CarIcon}
+                      title='Confort'
+                      subtitle='Tarifa plus.'
+                    />
+                  </CardContainer>
+                  <Button
+                    style={
+                      Object.keys(form.origin).length > 0 &&
+                      Object.keys(form.destination).length > 0 &&
+                      form.price !== ''
+                        ? 'button-morado'
+                        : 'button-disabled'
+                    }
+                    disabled={
+                      Object.keys(form.origin).length === 0 &&
+                      Object.keys(form.destination).length === 0 &&
+                      form.price === '' &&
+                      true
+                    }
+                    type='submit'
+                    textValue='Consultar Viaje'
                   />
-                </CardContainer>
-                <CardContainer
-                  style='typeTrip'
-                  handleClick={event => handleTypeTrip(event, '200')}
-                >
-                  <CardTwoLines
-                    image={CarIcon}
-                    title='Personal'
-                    subtitle='Tarifa econ&oacute;mica.'
-                  />
-                </CardContainer>
-                <CardContainer
-                  style='typeTrip'
-                  handleClick={event => handleTypeTrip(event, '300')}
-                >
-                  <CardTwoLines
-                    image={CarIcon}
-                    title='Confort'
-                    subtitle='Tarifa plus.'
-                  />
-                </CardContainer>
+                </form>
                 <Button
                   style={
-                    Object.keys(form.origin).length > 0 &&
-                    Object.keys(form.destination).length > 0 &&
-                    form.price !== ''
-                      ? 'button-morado'
+                    Object.keys(form.directions).length > 0
+                      ? 'button-verde'
                       : 'button-disabled'
                   }
-                  disabled={
-                    Object.keys(form.origin).length === 0 &&
-                    Object.keys(form.destination).length === 0 &&
-                    form.price === '' &&
-                    true
+                  type='button'
+                  textValue='Confirmar Viaje'
+                  handleClick={handleConfirmTrip}
+                />
+                <Button
+                  style={
+                    Object.keys(form.directions).length > 0
+                      ? 'button-rojo-underline'
+                      : 'button-disabled'
                   }
-                  type='submit'
-                  textValue='Consultar Viaje'
-                />
-              </form>
-              <Button
-                style={
-                  Object.keys(form.directions).length > 0
-                    ? 'button-verde'
-                    : 'button-disabled'
-                }
-                type='button'
-                textValue='Confirmar Viaje'
-                handleClick={handleConfirmTrip}
-              />
-              <Button
-                style={
-                  Object.keys(form.directions).length > 0
-                    ? 'button-rojo-underline'
-                    : 'button-disabled'
-                }
-                type='button'
-                textValue='Agregar a favoritos'
-                handleClick={handleAddFavorites}
-              />
-            </div>
-            <div></div>
-            <div></div>
-          </div>
-        </ContainerDashboardLeft>
-        <ContainerDashboardRight>
-          <div className='container__dashboard'>
-            <div className='map'>
-              <Map directions={form.directions} />
-            </div>
-            <ContainerDataTrip>
-              <div>
-                <CardTwoLines
-                  image={CashIcon}
-                  title={`$${form.estimateRate} / ${form.distance}`}
-                  subtitle='Tarifa estimada del viaje.'
-                />
-                <CardTwoLines
-                  image={FlagIcon}
-                  title={form.duration}
-                  subtitle='Tiempo estimado de llegada.'
-                />
-                <CardThreeLines
-                  image={CarIcon}
-                  title='Chevrolet Spark GT.'
-                  subtitle='ELX 890'
-                  detail='Automovil Asignado.'
-                />
-                <CardThreeLines
-                  image={DriverImg}
-                  title='Uber Contreras'
-                  subtitle='4.95'
-                  detail='Conductor Asignado'
-                  classes='data-trip__item-imgProfile'
-                  score={true}
+                  type='button'
+                  textValue='Agregar a favoritos'
+                  handleClick={handleAddFavorites}
                 />
               </div>
-            </ContainerDataTrip>
-          </div>
-        </ContainerDashboardRight>
-      </ContainerDashboard>
-    </Main>
+              <div></div>
+              <div></div>
+            </div>
+          </ContainerDashboardLeft>
+          <ContainerDashboardRight>
+            <div className='container__dashboard'>
+              <div className='map'>
+                <Map directions={form.directions} />
+              </div>
+              <ContainerDataTrip>
+                <div>
+                  <CardTwoLines
+                    image={CashIcon}
+                    title={`$${form.estimateRate} / ${form.distance}`}
+                    subtitle='Tarifa estimada del viaje.'
+                  />
+                  <CardTwoLines
+                    image={FlagIcon}
+                    title={form.duration}
+                    subtitle='Tiempo estimado de llegada.'
+                  />
+                  <CardThreeLines
+                    image={CarIcon}
+                    title='Chevrolet Spark GT.'
+                    subtitle='ELX 890'
+                    detail='Automovil Asignado.'
+                  />
+                  <CardThreeLines
+                    image={DriverImg}
+                    title='Uber Contreras'
+                    subtitle='4.95'
+                    detail='Conductor Asignado'
+                    classes='data-trip__item-imgProfile'
+                    score={true}
+                  />
+                </div>
+              </ContainerDataTrip>
+            </div>
+          </ContainerDashboardRight>
+        </ContainerDashboard>
+      </Main> 
+    }
+    </>
   );
 };
 
