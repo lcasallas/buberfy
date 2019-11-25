@@ -3,7 +3,7 @@
 Es el proyecto asignado por grupos en la Escuela de JavaScript de Platzi. La finalidad del proyecto es poder realizar una simulacion basica del flujo de una aplicación como Uber, Beat o Cabify.
 Este proyecto en el Front fue creado con React, Redux, React-Router, Google Maps, Sass y otras complementarias.
 
-###Como comenzar
+## Como comenzar
 
 1. Clonar el proyecto.
 2. Ejecutar el comando:
