@@ -14,8 +14,6 @@ import TwitterIcon from '../assets/static/twitter.png';
 import GoogleIcon from '../assets/static/google.png';
 
 const Login = props => {
-  console.log(props.user.login);
-
   const [form, setValues] = useState({
     email: '',
   });
@@ -46,6 +44,7 @@ const Login = props => {
             placeholder='email'
             handleChange={handleChange}
             name='email'
+            focus={true}
           />
           <Input
             type='password'

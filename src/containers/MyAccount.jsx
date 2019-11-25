@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { historyRequest } from '../actions';
 
 import Main from '../components/Main';
-import Header from '../components/Header';
 import ContainerDashboard from '../components/ContainerDashboard';
 import ContainerDashboardLeft from '../components/ContainerDashboardLeft';
 import ContainerDashboardRight from '../components/ContainerDashboardRight';
@@ -22,6 +21,9 @@ import CashIcon from '../assets/static/iconCash.png';
 import FlagIcon from '../assets/static/iconFlag.png';
 import DriverImg from '../assets/static/userProfile.jpeg';
 import BankCardIcon from '../assets/static/iconBankCard.png';
+import StartIcon from '../assets/static/marcadorInicio.png';
+import EndtIcon from '../assets/static/marcadorFin.png';
+import DistanceIcon from '../assets/static/distancia.png';
 
 const MyAccount = ({ user, historytrips, historyRequest }) => {
   useEffect(() => {
@@ -37,27 +39,28 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
   });
 
   const [dataMap, setValuesMap] = useState({
-    origin: {},
-    destination: {},
+    origin: '',
+    destino: '',
     duration: '',
     distance: '',
     directions: {},
     price: '',
     estimateRate: '',
+    tipoviaje: '',
   });
 
-  const handleDirectionsService = (dataTrip) => {
+  const handleDirectionsService = dataTrip => {
     const DirectionsService = new window.google.maps.DirectionsService();
 
     DirectionsService.route(
       {
         origin: new window.google.maps.LatLng(
           dataTrip.originlat,
-          dataTrip.originlng,
+          dataTrip.originlng
         ),
         destination: new window.google.maps.LatLng(
           dataTrip.destinationlat,
-          dataTrip.destinationlng,
+          dataTrip.destinationlng
         ),
         travelMode: window.google.maps.TravelMode.DRIVING,
         unitSystem: window.google.maps.UnitSystem.METRIC,
@@ -68,7 +71,7 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
         } else {
           console.error(`Error solicitando la direccion ${result}`);
         }
-      },
+      }
     );
   };
 
@@ -83,7 +86,7 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
         destinations: [
           new window.google.maps.LatLng(
             dataTrip.destinationlat,
-            dataTrip.destinationlng,
+            dataTrip.destinationlng
           ),
         ],
         travelMode: window.google.maps.TravelMode.DRIVING,
@@ -99,13 +102,16 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
             duration: dataTrip.duration,
             distance: dataTrip.distance,
             estimateRate: dataTrip.estimaterate,
+            origin: dataTrip.origin,
+            destino: dataTrip.destino,
+            tipoviaje: dataTrip.tipoviaje,
           });
         }
-      },
+      }
     );
   };
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setValues({
       ...form,
       [event.target.name]: event.target.value,
@@ -116,14 +122,13 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
     console.log('Datos Actualizados');
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
     console.log('Datos mi cuenta');
   };
 
   return (
     <Main>
-      <Header />
       <ContainerDashboard>
         <ContainerDashboardLeft>
           <div className='container__menu-account'>
@@ -180,58 +185,78 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
                 <h2>Historial de Viajes</h2>
                 <div>
                   {historytrips.length > 0 &&
-										historytrips.map((trip, idx) => {
-										  return (
-										    <CardContainer
-										      key={idx}
-										      handleClick={() => handleDirectionsService(trip)}
-										    >
-										      <CardOneLine
-										        imageLeft={CarIcon}
-										        imageRight={BankCardIcon}
-										        title={trip.destino}
-										      />
-										    </CardContainer>
-										  );
-										})}
+                    historytrips.map((trip, idx) => {
+                      return (
+                        <CardContainer
+                          key={idx}
+                          handleClick={() => handleDirectionsService(trip)}
+                        >
+                          <CardOneLine
+                            imageLeft={CarIcon}
+                            imageRight={BankCardIcon}
+                            title={trip.destino}
+                          />
+                        </CardContainer>
+                      );
+                    })}
                 </div>
               </div>
               <div className='container__history-map'>
                 <div className='map map__account'>
-                  <Map
-                    origin={dataMap.origin}
-                    destination={dataMap.destination}
-                    directions={dataMap.directions}
-                  />
+                  <Map directions={dataMap.directions} />
                 </div>
               </div>
             </div>
             <div className='container__history-map'>
               <ContainerDataTrip>
-                <CardTwoLines
-                  image={CashIcon}
-                  title={`$${dataMap.estimateRate} / ${dataMap.distance}`}
-                  subtitle='Tarifa estimada del viaje.'
-                />
-                <CardTwoLines
-                  image={FlagIcon}
-                  title={dataMap.duration}
-                  subtitle='Tiempo estimado de llegada.'
-                />
-                <CardThreeLines
-                  image={CarIcon}
-                  title='Chevrolet Spark GT.'
-                  subtitle='ELX 890'
-                  detail='Automovil Asignado.'
-                />
-                <CardThreeLines
-                  image={DriverImg}
-                  title='Uber Contreras'
-                  subtitle='4.95'
-                  detail='Conductor Asignado'
-                  classes='data-trip__item-imgProfile'
-                  score={true}
-                />
+                <div>
+                  <CardTwoLines
+                    image={CashIcon}
+                    title={`$${dataMap.estimateRate} / ${dataMap.distance}`}
+                    subtitle='Tarifa estimada del viaje.'
+                  />
+                  <CardTwoLines
+                    image={FlagIcon}
+                    title={dataMap.duration}
+                    subtitle='Tiempo estimado de llegada.'
+                  />
+                  <CardThreeLines
+                    image={CarIcon}
+                    title='Chevrolet Spark GT.'
+                    subtitle='ELX 890'
+                    detail='Automovil Asignado.'
+                  />
+                  <CardThreeLines
+                    image={DriverImg}
+                    title='Uber Contreras'
+                    subtitle='4.95'
+                    detail='Conductor Asignado'
+                    classes='data-trip__item-imgProfile'
+                    score={true}
+                  />
+                </div>
+                <div>
+                  <CardTwoLines
+                    image={StartIcon}
+                    title={dataMap.origin}
+                    subtitle='Lugar de Origen.'
+                  />
+                  <CardTwoLines
+                    image={EndtIcon}
+                    title={dataMap.destino}
+                    subtitle='Lugar de destino.'
+                  />
+                  <CardTwoLines
+                    image={DistanceIcon}
+                    title={dataMap.distance}
+                    subtitle='Kilometros de viaje.'
+                  />
+                  <CardTwoLines
+                    image={CarIcon}
+                    title={dataMap.tipoviaje}
+                    subtitle='Tipo de viaje.'
+                  />
+                </div>
               </ContainerDataTrip>
             </div>
           </div>
@@ -241,7 +266,7 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     user: state.user,
     historytrips: state.historytrips,

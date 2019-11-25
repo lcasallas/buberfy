@@ -18,7 +18,7 @@ const reducer = (state, action) => {
     case 'GET_FAVORITE':
       return {
         ...state,
-        favoritesTrips: action.payload,
+        favorites: action.payload,
       };
     default:
       return state;

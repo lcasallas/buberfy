@@ -7,12 +7,10 @@ import Map from '../components/Map';
 // import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 
 import Main from '../components/Main';
-import Header from '../components/Header';
 import ContainerDashboard from '../components/ContainerDashboard';
 import ContainerDashboardLeft from '../components/ContainerDashboardLeft';
 import ContainerDashboardRight from '../components/ContainerDashboardRight';
 import ContainerDataTrip from '../components/ContainerDataTrip';
-import Input from '../components/Input';
 import Button from '../components/Button';
 import CardContainer from '../components/CardContainer';
 import CardTwoLines from '../components/CardTwoLines';
@@ -35,7 +33,7 @@ const Dashboard = ({ google }) => {
     directions: {},
     price: '',
     estimateRate: '',
-    tipoViaje:''
+    tipoViaje: '',
   });
 
   const handleState = (state, type, typeAux, address) => {
@@ -101,7 +99,7 @@ const Dashboard = ({ google }) => {
 
   const handleAddFavorites = () => {
     console.log('add favorites');
-  }
+  };
 
   const handleDirectionsService = () => {
     const DirectionsService = new window.google.maps.DirectionsService();
@@ -246,7 +244,6 @@ const Dashboard = ({ google }) => {
 
   return (
     <Main>
-      <Header />
       <ContainerDashboard>
         <ContainerDashboardLeft>
           <div className='container__menu-trip'>
@@ -346,37 +343,35 @@ const Dashboard = ({ google }) => {
         <ContainerDashboardRight>
           <div className='container__dashboard'>
             <div className='map'>
-              <Map
-                origin={form.origin}
-                destination={form.destination}
-                directions={form.directions}
-              />
+              <Map directions={form.directions} />
             </div>
             <ContainerDataTrip>
-              <CardTwoLines
-                image={CashIcon}
-                title={`$${form.estimateRate} / ${form.distance}`}
-                subtitle='Tarifa estimada del viaje.'
-              />
-              <CardTwoLines
-                image={FlagIcon}
-                title={form.duration}
-                subtitle='Tiempo estimado de llegada.'
-              />
-              <CardThreeLines
-                image={CarIcon}
-                title='Chevrolet Spark GT.'
-                subtitle='ELX 890'
-                detail='Automovil Asignado.'
-              />
-              <CardThreeLines
-                image={DriverImg}
-                title='Uber Contreras'
-                subtitle='4.95'
-                detail='Conductor Asignado'
-                classes='data-trip__item-imgProfile'
-                score={true}
-              />
+              <div>
+                <CardTwoLines
+                  image={CashIcon}
+                  title={`$${form.estimateRate} / ${form.distance}`}
+                  subtitle='Tarifa estimada del viaje.'
+                />
+                <CardTwoLines
+                  image={FlagIcon}
+                  title={form.duration}
+                  subtitle='Tiempo estimado de llegada.'
+                />
+                <CardThreeLines
+                  image={CarIcon}
+                  title='Chevrolet Spark GT.'
+                  subtitle='ELX 890'
+                  detail='Automovil Asignado.'
+                />
+                <CardThreeLines
+                  image={DriverImg}
+                  title='Uber Contreras'
+                  subtitle='4.95'
+                  detail='Conductor Asignado'
+                  classes='data-trip__item-imgProfile'
+                  score={true}
+                />
+              </div>
             </ContainerDataTrip>
           </div>
         </ContainerDashboardRight>

@@ -5,6 +5,9 @@ import LogoImg from '../assets/static/logo.png';
 import Avatar from '../assets/static/userProfile.jpeg';
 
 const Header = () => {
+  const handleLogout = () => {
+    console.log('logout');
+  };
   return (
     <header className='header'>
       <div className='header__img'>
@@ -21,7 +24,11 @@ const Header = () => {
           <li>
             <Link to='/dashboard'>viajar</Link>
           </li>
-          <li>cerrar sesi&oacute;n</li>
+          <li>
+            <button className='header__btnlogout' onClick={handleLogout}>
+              cerrar sesi&oacute;n
+            </button>
+          </li>
         </ul>
         <div className='header__profile'>
           <img src={Avatar} alt='Photo Profile' />

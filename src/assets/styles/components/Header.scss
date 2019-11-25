@@ -9,6 +9,7 @@
   box-shadow: 6px 6px 16px 0px rgba(0, 0, 0, 0.2);
   background-color: white;
   z-index: 3;
+  position: relative;
 }
 .header__menu {
   display: flex;
@@ -41,4 +42,12 @@
   height: 45px;
   object-fit: cover;
   border-radius: 50%;
+}
+.header__btnlogout {
+  font-family: inherit;
+  text-transform: uppercase;
+  color: red;
+  font-size: 10px;
+  border: none;
+  cursor: pointer;
 }
