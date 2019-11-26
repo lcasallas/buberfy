@@ -1,5 +1,5 @@
 import React from 'react';
-import '../assets/styles/components/main.scss';
+import '../assets/styles/components/Main.scss';
 
 const Main = ({ children }) => <div className='main'>{children}</div>;
 
