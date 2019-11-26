@@ -5,6 +5,16 @@ const reducer = (state, action) => {
 				...state,
 				user: action.payload,
 			};
+		case 'SET_USER':
+			return {
+				...state,
+				profile: action.payload,
+			};
+		case 'SET_LOCATION':
+			return {
+				...state,
+				locationNow: action.payload,
+			};
 		case 'SET_NOTIFICATION':
 			return {
 				...state,

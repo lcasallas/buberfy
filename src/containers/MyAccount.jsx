@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { historyRequest } from '../actions';
+import { historyRequest, userRequest } from '../actions';
 
 import Main from '../components/Main';
 import ContainerDashboard from '../components/ContainerDashboard';
@@ -25,11 +25,13 @@ import StartIcon from '../assets/static/marcadorInicio.png';
 import EndtIcon from '../assets/static/marcadorFin.png';
 import DistanceIcon from '../assets/static/distancia.png';
 
-const MyAccount = ({ user, historytrips, historyRequest }) => {
-	useEffect(() => {
-		historyRequest(user.id_usuario);
-	}, []);
-
+const MyAccount = ({
+	user,
+	profile,
+	historytrips,
+	historyRequest,
+	userRequest,
+}) => {
 	const [form, setValues] = useState({
 		nombre: '',
 		apellido: '',
@@ -48,6 +50,11 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
 		estimateRate: '',
 		tipoviaje: '',
 	});
+
+	useEffect(() => {
+		console.log(profile);
+		historyRequest(user.id_usuario);
+	}, []);
 
 	const handleDirectionsService = dataTrip => {
 		const DirectionsService = new window.google.maps.DirectionsService();
@@ -143,31 +150,35 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
 									placeholder='Nombre *'
 									handleChange={handleChange}
 									name='nombre'
+									value={form.nombre}
 								/>
 								<Input
 									type='text'
 									placeholder='Apellido *'
 									handleChange={handleChange}
 									name='direccionDestino'
+									value={form.apellido}
 								/>
 								<Input
 									type='text'
 									placeholder='E-mail *'
 									handleChange={handleChange}
 									name='email'
+									value={form.mail}
 								/>
 								<Input
 									type='text'
 									placeholder='Telefono *'
 									handleChange={handleChange}
 									name='telefono'
+									value={form.telefono}
 								/>
-								<Input
+								{/* <Input
 									type='text'
 									placeholder='Tarjeta de cr&eacute;dito'
 									handleChange={handleChange}
 									name='tarjeta'
-								/>
+								/> */}
 								<Button
 									style='button-verde'
 									type='submit'
@@ -269,12 +280,14 @@ const MyAccount = ({ user, historytrips, historyRequest }) => {
 const mapStateToProps = state => {
 	return {
 		user: state.user,
+		profile: state.profile,
 		historytrips: state.historytrips,
 	};
 };
 
 const mapDispatchToProps = {
 	historyRequest,
+	userRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MyAccount);

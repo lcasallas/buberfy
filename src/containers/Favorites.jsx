@@ -21,176 +21,171 @@ import FlagIcon from '../assets/static/iconFlag.png';
 import DriverImg from '../assets/static/userProfile.jpeg';
 import BankCardIcon from '../assets/static/iconBankCard.png';
 
-const Favorites = ({ user, favoritesTrips, favoriteRequest }) => {
-  useEffect(() => {
-    favoriteRequest(user.id_usuario);
-  }, []);
+const Favorites = ({ user, locationNow, favoritesTrips, favoriteRequest }) => {
+	useEffect(() => {
+		favoriteRequest(user.id_usuario);
+	}, []);
 
-  const [form, setValues] = useState({
-    addressOrigin: '',
-    addressDestination: '',
-  });
+	const [form, setValues] = useState({
+		addressOrigin: '',
+		addressDestination: '',
+	});
 
-  const [dataMap, setValuesMap] = useState({
-    origin: {},
-    destination: {},
-    duration: '',
-    distance: '',
-    directions: {},
-    price: '',
-    estimateRate: '',
-  });
+	const [dataMap, setValuesMap] = useState({
+		origin: {},
+		destination: {},
+		duration: '',
+		distance: '',
+		directions: {},
+		price: '',
+		estimateRate: '',
+	});
 
-  const handleDirectionsService = dataTrip => {
-    const DirectionsService = new window.google.maps.DirectionsService();
+	const handleDirectionsService = dataTrip => {
+		console.log(dataTrip);
 
-    DirectionsService.route(
-      {
-        origin: new window.google.maps.LatLng(
-          dataTrip.originlat,
-          dataTrip.originlng
-        ),
-        destination: new window.google.maps.LatLng(
-          dataTrip.destinationlat,
-          dataTrip.destinationlng
-        ),
-        travelMode: window.google.maps.TravelMode.DRIVING,
-        unitSystem: window.google.maps.UnitSystem.METRIC,
-      },
-      (result, status) => {
-        if (status === window.google.maps.DirectionsStatus.OK) {
-          handleDistanceMatrix(result, dataTrip);
-        } else {
-          console.error(`Error solicitando la direccion ${result}`);
-        }
-      }
-    );
-  };
+		const DirectionsService = new window.google.maps.DirectionsService();
 
-  const handleDistanceMatrix = (response, dataTrip) => {
-    const DistanceService = new window.google.maps.DistanceMatrixService();
+		DirectionsService.route(
+			{
+				origin: new window.google.maps.LatLng(locationNow.lat, locationNow.lng),
+				destination: new window.google.maps.LatLng(dataTrip.lat, dataTrip.lng),
+				travelMode: window.google.maps.TravelMode.DRIVING,
+				unitSystem: window.google.maps.UnitSystem.METRIC,
+			},
+			(result, status) => {
+				if (status === window.google.maps.DirectionsStatus.OK) {
+					handleDistanceMatrix(result, dataTrip);
+				} else {
+					console.error(`Error solicitando la direccion ${result}`);
+				}
+			}
+		);
+	};
 
-    DistanceService.getDistanceMatrix(
-      {
-        origins: [
-          new window.google.maps.LatLng(dataTrip.originlat, dataTrip.originlng),
-        ],
-        destinations: [
-          new window.google.maps.LatLng(
-            dataTrip.destinationlat,
-            dataTrip.destinationlng
-          ),
-        ],
-        travelMode: window.google.maps.TravelMode.DRIVING,
-        avoidHighways: false,
-        avoidTolls: false,
-        unitSystem: window.google.maps.UnitSystem.METRIC,
-      },
-      (result, status) => {
-        if (status === 'OK') {
-          setValuesMap({
-            ...dataMap,
-            directions: response,
-            duration: result.rows[0].elements[0].duration.text,
-            distance: result.rows[0].elements[0].distance.text,
-            estimateRate: dataTrip.estimaterate,
-          });
-        }
-      }
-    );
-  };
+	const handleDistanceMatrix = (response, dataTrip) => {
+		const DistanceService = new window.google.maps.DistanceMatrixService();
 
-  const handleConfirmTrip = () => {
-    console.log('Confirma Viaje');
-  };
+		DistanceService.getDistanceMatrix(
+			{
+				origins: [
+					new window.google.maps.LatLng(locationNow.lat, locationNow.lng),
+				],
+				destinations: [
+					new window.google.maps.LatLng(dataTrip.lat, dataTrip.lng),
+				],
+				travelMode: window.google.maps.TravelMode.DRIVING,
+				avoidHighways: false,
+				avoidTolls: false,
+				unitSystem: window.google.maps.UnitSystem.METRIC,
+			},
+			(result, status) => {
+				if (status === 'OK') {
+					setValuesMap({
+						...dataMap,
+						directions: response,
+						duration: result.rows[0].elements[0].duration.text,
+						distance: result.rows[0].elements[0].distance.text,
+						estimateRate:
+							(result.rows[0].elements[0].distance.value / 100) * 200,
+					});
+				}
+			}
+		);
+	};
 
-  return (
-    <Main>
-      <ContainerDashboard>
-        <ContainerDashboardLeft>
-          <div className='container__menu-trip'>
-            <div className='container__menu-trip-options'>
-              <h2>Destinos Favoritos</h2>
-              {favoritesTrips.length > 0 &&
-                favoritesTrips.map((trip, idx) => {
-                  return (
-                    <CardContainer
-                      key={idx}
-                      handleClick={() => handleDirectionsService(trip)}
-                    >
-                      <CardOneLine
-                        imageLeft={CarIcon}
-                        imageRight={BankCardIcon}
-                        title={trip.destino}
-                      />
-                    </CardContainer>
-                  );
-                })}
-            </div>
-            <div>
-              <Button
-                style='button-verde'
-                type='button'
-                textValue='Confirmar Viaje'
-                handleClick={handleConfirmTrip}
-              />
-            </div>
-            <div />
-          </div>
-        </ContainerDashboardLeft>
-        <ContainerDashboardRight>
-          <div className='container__dashboard'>
-            <div className='map'>
-              <Map
-                origin={dataMap.origin}
-                destination={dataMap.destination}
-                directions={dataMap.directions}
-              />
-            </div>
-            <ContainerDataTrip>
-              <div>
-                <CardTwoLines
-                  image={CashIcon}
-                  title={`$${dataMap.estimateRate} / ${dataMap.distance}`}
-                  subtitle='Tarifa estimada del viaje.'
-                />
-                <CardTwoLines
-                  image={FlagIcon}
-                  title={dataMap.duration}
-                  subtitle='Tiempo estimado de llegada.'
-                />
-                <CardThreeLines
-                  image={CarIcon}
-                  title='Chevrolet Spark GT.'
-                  subtitle='ELX 890'
-                  detail='Automovil Asignado.'
-                />
-                <CardThreeLines
-                  image={DriverImg}
-                  title='Uber Contreras'
-                  subtitle='4.95'
-                  detail='Conductor Asignado'
-                  classes='data-trip__item-imgProfile'
-                  score={true}
-                />
-              </div>
-            </ContainerDataTrip>
-          </div>
-        </ContainerDashboardRight>
-      </ContainerDashboard>
-    </Main>
-  );
+	const handleConfirmTrip = () => {
+		console.log('Confirma Viaje');
+	};
+
+	return (
+		<Main>
+			<ContainerDashboard>
+				<ContainerDashboardLeft>
+					<div className='container__menu-trip'>
+						<div className='container__menu-trip-options'>
+							<h2>Destinos Favoritos</h2>
+							{favoritesTrips.length > 0 &&
+								favoritesTrips.map((trip, idx) => {
+									return (
+										<CardContainer
+											key={idx}
+											handleClick={() => handleDirectionsService(trip)}
+										>
+											<CardOneLine
+												imageLeft={CarIcon}
+												imageRight={BankCardIcon}
+												title={trip.direccion}
+											/>
+										</CardContainer>
+									);
+								})}
+						</div>
+						<div>
+							<Button
+								style='button-verde'
+								type='button'
+								textValue='Confirmar Viaje'
+								handleClick={handleConfirmTrip}
+							/>
+						</div>
+						<div />
+					</div>
+				</ContainerDashboardLeft>
+				<ContainerDashboardRight>
+					<div className='container__dashboard'>
+						<div className='map'>
+							<Map
+								origin={dataMap.origin}
+								destination={dataMap.destination}
+								directions={dataMap.directions}
+							/>
+						</div>
+						<ContainerDataTrip>
+							<div>
+								<CardTwoLines
+									image={CashIcon}
+									title={`$${dataMap.estimateRate} / ${dataMap.distance}`}
+									subtitle='Tarifa estimada del viaje.'
+								/>
+								<CardTwoLines
+									image={FlagIcon}
+									title={dataMap.duration}
+									subtitle='Tiempo estimado de llegada.'
+								/>
+								<CardThreeLines
+									image={CarIcon}
+									title='Chevrolet Spark GT.'
+									subtitle='ELX 890'
+									detail='Automovil Asignado.'
+								/>
+								<CardThreeLines
+									image={DriverImg}
+									title='Uber Contreras'
+									subtitle='4.95'
+									detail='Conductor Asignado'
+									classes='data-trip__item-imgProfile'
+									score={true}
+								/>
+							</div>
+						</ContainerDataTrip>
+					</div>
+				</ContainerDashboardRight>
+			</ContainerDashboard>
+		</Main>
+	);
 };
 
 const mapStateToProps = state => {
-  return {
-    user: state.user,
-    favoritesTrips: state.favorites,
-  };
+	return {
+		user: state.user,
+		locationNow: state.locationNow,
+		favoritesTrips: state.favorites,
+	};
 };
 
 const mapDispatchToProps = {
-  favoriteRequest,
+	favoriteRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Favorites);

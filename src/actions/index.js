@@ -12,13 +12,18 @@ export const setLogout = payload => ({
 	payload,
 });
 
+export const setLocationNow = payload => ({
+	type: 'SET_LOCATION',
+	payload,
+});
+
 export const registerRequest = payload => ({
 	type: 'REGISTER_REQUEST',
 	payload,
 });
 
-export const saveTravel = payload => ({
-	type: 'SAVE_TRAVEL',
+export const getUserProfile = payload => ({
+	type: 'SET_USER',
 	payload,
 });
 
@@ -53,21 +58,30 @@ export const registerUser = (payload, redirecUrl) => {
 };
 
 export const loginRequest = payload => {
-	console.log(URL_API);
 	return dispatch => {
 		axios
-			//hacer cambio a post para poner en produccion
 			.post(`${URL_API}loginuser`, payload)
-			// .get(`${URL_API}loginuser/${payload.email}`)
 			.then(({ data }) => {
 				const login = data.body.login;
 
 				if (login) {
 					dispatch(setLogin(data.body));
+					dispatch(userRequest(data.body.id_usuario));
 				} else {
 					dispatch(setNotificacion({ message: data.message, type: 'error' }));
 				}
 			})
+			.catch(err => {
+				return new Error(err);
+			});
+	};
+};
+
+export const userRequest = payload => {
+	return dispatch => {
+		axios
+			.get(`${URL_API}users/${payload}`)
+			.then(({ data }) => dispatch(getUserProfile(data.body.user)))
 			.catch(err => {
 				return new Error(err);
 			});
@@ -80,7 +94,6 @@ export const saveTravelRequest = payload => {
 			.post(`${URL_API}addtravel`, payload)
 			.then(({ data }) => {
 				if (Object.keys(data.body.travel).length > 0) {
-					dispatch(saveTravel(data.body.travel));
 					dispatch(setNotificacion({ message: data.message, type: 'success' }));
 				} else {
 					dispatch(setNotificacion({ message: data.message, type: 'error' }));
@@ -92,6 +105,22 @@ export const saveTravelRequest = payload => {
 	};
 };
 
+export const saveFavoriteTravelRequest = payload => {
+	return dispatch => {
+		axios
+			.post(`${URL_API}addFavorite`, payload)
+			.then(({ data }) => {
+				if (Object.keys(data.body.favorite).length > 0) {
+					dispatch(setNotificacion({ message: data.message, type: 'success' }));
+				} else {
+					dispatch(setNotificacion({ message: data.message, type: 'error' }));
+				}
+			})
+			.catch(err => {
+				return new Error(err);
+			});
+	};
+};
 export const historyRequest = payload => {
 	return dispatch => {
 		axios
@@ -106,8 +135,8 @@ export const historyRequest = payload => {
 export const favoriteRequest = payload => {
 	return dispatch => {
 		axios
-			.get(`${URL_API}userTravels/${payload}`)
-			.then(({ data }) => dispatch(getFavorites(data.body.travels)))
+			.get(`${URL_API}userFavorites/${payload}`)
+			.then(({ data }) => dispatch(getFavorites(data.body.favorites)))
 			.catch(err => {
 				return new Error(err);
 			});

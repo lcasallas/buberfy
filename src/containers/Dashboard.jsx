@@ -4,7 +4,7 @@ import PlacesAutocomplete, {
   getLatLng,
 } from 'react-places-autocomplete';
 import { connect } from 'react-redux';
-import { saveTravelRequest } from '../actions';
+import { saveTravelRequest, saveFavoriteTravelRequest } from '../actions';
 
 import Map from '../components/Map';
 import Main from '../components/Main';
@@ -23,7 +23,7 @@ import CashIcon from '../assets/static/iconCash.png';
 import FlagIcon from '../assets/static/iconFlag.png';
 import DriverImg from '../assets/static/userProfile.jpeg';
 
-const Dashboard = ({ id_usuario, saveTravelRequest }) => {
+const Dashboard = ({ id_usuario, saveTravelRequest, saveFavoriteTravelRequest }) => {
   
   const [form, setValues] = useState({
     addressOrigin: '',
@@ -115,7 +115,14 @@ const Dashboard = ({ id_usuario, saveTravelRequest }) => {
   };
 
   const handleAddFavorites = () => {
-    console.log('add favorites');
+    const data = {
+      'id_usuario': id_usuario,
+      'lat': form.destination.lat,
+      'lon': form.destination.lng,
+      'direccion': form.addressDestination,
+      'alias': form.addressDestination,
+    }
+    saveFavoriteTravelRequest(data);
   };
 
   const handleDirectionsService = () => {
@@ -405,5 +412,6 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = {
   saveTravelRequest,
+  saveFavoriteTravelRequest
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

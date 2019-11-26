@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { loginRequest } from '../actions';
+import { loginRequest, setLocationNow } from '../actions';
 import '../assets/styles/components/Login.scss';
 import '../assets/styles/App.scss';
 import ContainerForm from '../components/ContainerForm';
@@ -13,7 +13,19 @@ import FacebookIcon from '../assets/static/facebook.png';
 import TwitterIcon from '../assets/static/twitter.png';
 import GoogleIcon from '../assets/static/google.png';
 
-const Login = props => {
+const Login = ({ user, loginRequest, setLocationNow }) => {
+	const geo = window.navigator.geolocation;
+
+	useEffect(() => {
+		geo.getCurrentPosition(position => {
+			console.log(position);
+			setLocationNow({
+				lat: position.coords.latitude,
+				lng: position.coords.longitude,
+			});
+		});
+	}, []);
+
 	const [form, setValues] = useState({
 		email: '',
 	});
@@ -27,10 +39,10 @@ const Login = props => {
 
 	const handleSubmit = event => {
 		event.preventDefault();
-		props.loginRequest(form);
+		loginRequest(form);
 	};
 
-	return !props.user.login ? (
+	return !user.login ? (
 		<section className='login'>
 			<div className='login__image'>
 				<img src={LoginImg} alt='' />
@@ -96,5 +108,6 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
 	loginRequest,
+	setLocationNow,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

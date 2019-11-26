@@ -8,6 +8,8 @@ import App from './routes/App';
 
 const initialState = {
 	user: {},
+	locationNow: {},
+	profile: {},
 	favorites: [],
 	mytrips: [],
 	historytrips: [],
