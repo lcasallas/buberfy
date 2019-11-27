@@ -10,7 +10,8 @@ import Favorites from '../containers/Favorites';
 import Header from '../components/Header';
 import Notification from '../containers/Notification';
 
-const APIMAP = process.env.API_MAPS;
+// const APIMAP = process.env.API_MAPS;
+const APIMAP = 'AIzaSyBT0i5Q5Wmyr7N4N3RSjojWNIhA2tBPE9o';
 
 const App = ({ isLogin, notification }) => (
 	<BrowserRouter>

@@ -18,7 +18,6 @@ const Login = ({ user, loginRequest, setLocationNow }) => {
 
 	useEffect(() => {
 		geo.getCurrentPosition(position => {
-			console.log(position);
 			setLocationNow({
 				lat: position.coords.latitude,
 				lng: position.coords.longitude,

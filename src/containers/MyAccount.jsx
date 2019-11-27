@@ -52,7 +52,6 @@ const MyAccount = ({
 	});
 
 	useEffect(() => {
-		console.log(profile);
 		historyRequest(user.id_usuario);
 	}, []);
 
