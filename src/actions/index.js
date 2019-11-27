@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const URL_API = process.env.DB_API;
+// const URL_API = process.env.DB_API;
+const URL_API = 'https://backend-buberfy.herokuapp.com/';
 
 export const setLogin = payload => ({
 	type: 'SET_LOGIN',
